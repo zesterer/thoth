@@ -7,12 +7,12 @@
 	#error "Must be compiled with an i686 elf cross-compiler"
 #endif
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 0
-#define VERSION_RELEASE 1
+//----LOCAL----
+#include "kernel.h"
 
 extern "C" //Use C to link kernel_main
-void kernelMain()
+void kernelStart()
 {
-	return;
+	SquidOS::Kernel::Kernel kernel;
+	kernel.initialize();
 }

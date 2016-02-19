@@ -1,12 +1,36 @@
+project_name = "Thoth"
+os_bin_name = project_name.lower() + ".bin"
+
 subdirs = []
 
-#Kernel
-subdirs += ["kernel/SConscript"]
+#Bootstrap
+subdirs += ["bootstrap/SConscript"] #Bootstrap subdirectory
+subdirs += ["kernel/SConscript"] #Kernel subdirectory
+subdirs += ["library/SConscript"] #Libraries subdirectory
+subdirs += ["program/SConscript"] #Programs subdirectory
 
-#Libraries
-subdirs += ["library/SConscript"]
+SConscript(subdirs) #Perform subdirectory tasks
 
-#Programs
-subdirs += ["prog/SConscript"]
+environment = Environment(CC = "i686-elf-gcc",
+						  CXX = "i686-elf-g++",
+						  LINKER = "i686-elf-g++",
+						  LINKFLAGS = "-T src/linker.ld -ffreestanding -O2 -nostdlib -lgcc")
 
-SConscript(subdirs)
+kernel_objects = []
+
+#Bootstrap objects
+kernel_objects += Glob("bootstrap/*.o")
+
+#Kernel objects
+kernel_objects += Glob('kernel/*.o')
+kernel_objects += Glob('kernel/c/*.o')
+kernel_objects += Glob('kernel/terminal/*.o')
+
+#Library objects
+kernel_objects += Glob('library/libstd/*.o')
+
+
+#Link everything into the main kernel binary
+kernel_bin = environment.Program(os_bin_name, kernel_objects)
+
+Depends(kernel_bin, "linker.ld")
