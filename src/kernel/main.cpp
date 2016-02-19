@@ -8,11 +8,22 @@
 #endif
 
 //----LOCAL----
-#include "kernel.h"
+//#include "kernel.h"
+
+#include "thoth/vga.h"
+#include "thoth/assert.h"
 
 extern "C" //Use C to link kernel_main
 void kernelStart()
 {
-	SquidOS::Kernel::Kernel kernel;
-	kernel.initialize();
+	//SquidOS::Kernel::Kernel kernel;
+	//kernel.initialize();
+	
+	thoth::vgaInit();
+	
+	thoth::assert(true, "Initialised C++ environment");
+	thoth::assert(true, "Initialised text-mode VGA buffer");
+	thoth::puts("\n");
+	
+	thoth::puts("Welcome to the Thoth operating system");
 }

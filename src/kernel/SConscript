@@ -1,17 +1,16 @@
 environment = Environment(CC = "i686-elf-gcc",
 						  CXX = "i686-elf-g++",
-						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall -Wextra",
+						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
 						  LINKER = "i686-elf-g++",
 						  LINKFLAGS = "-T linker.ld -ffreestanding -O2 -nostdlib -lgcc",
 						  OBJCOPY = "i686-elf-objcopy")
 
 source_files = []
-include_dirs = []
 
-source_files += Glob('*.cpp')
-source_files += Glob('c/*.cpp')
-source_files += Glob('terminal/*.cpp')
+source_files += Glob("*.cpp")
+source_files += Glob("thoth/*.cpp")
 
-include_dirs += ["."]
+for i in source_files:
+	print(i)
 
 kernel_objects = environment.Object(source_files)

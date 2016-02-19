@@ -1,5 +1,5 @@
-#ifndef KERNEL_C_STD_H
-#define KERNEL_C_STD_H
+#ifndef THOTH_TYPES_H
+#define THOTH_TYPES_H
 
 //----STANDARD----
 #include "stddef.h"
@@ -20,35 +20,14 @@
 #define CPUID_VENDOR_NSC          "Geode by NSC"
 #define CPUID_VENDOR_RISE         "RiseRiseRise"
 
-namespace SquidOS
-{
-	namespace Kernel
-	{
-		namespace C
-		{
-			static char lastCharacter = 0;
-			
-			extern char int_to_char(uint8_t v);
+typedef uint8_t uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
 
-			extern size_t strlen(const char* str);
-			
-			extern void wait(uint32_t time);
-			
-			extern uint8_t inb(uint16_t port);
-			
-			extern void outb(uint16_t port, uint8_t val);
-			
-			extern char getScancode();
-			
-			extern char scancodeToCharacter(char c);
-			
-			extern bool areInterruptsEnabled();
-			
-			extern void cpuid(int code, uint32_t* a, uint32_t* d);
-			
-			extern void lidt(void* base, uint16_t size);
-		}
-	}
-}
+typedef int8_t int8;
+typedef int16_t int16;
+typedef int32_t int32;
+typedef int64_t int64;
 
 #endif

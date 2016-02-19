@@ -25,6 +25,7 @@ kernel_objects += Glob("bootstrap/*.o")
 kernel_objects += Glob('kernel/*.o')
 kernel_objects += Glob('kernel/c/*.o')
 kernel_objects += Glob('kernel/terminal/*.o')
+kernel_objects += Glob('kernel/thoth/*.o')
 
 #Library objects
 kernel_objects += Glob('library/libstd/*.o')
