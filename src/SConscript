@@ -1,0 +1,12 @@
+subdirs = []
+
+#Kernel
+subdirs += ["kernel/SConscript"]
+
+#Libraries
+subdirs += ["library/SConscript"]
+
+#Programs
+subdirs += ["prog/SConscript"]
+
+SConscript(subdirs)

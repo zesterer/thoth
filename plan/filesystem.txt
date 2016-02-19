@@ -46,3 +46,15 @@
 			Downloads/
 			Music/
 			Pictures/
+
+
+/
+	app/
+		example/
+			bin/
+			dat/
+			run.scr
+	lib/
+	dev/
+	sys/
+	usr/
