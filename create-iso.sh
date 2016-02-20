@@ -1,3 +1,5 @@
+#!/bin/sh
+
 DATE=`date --date="now" "+%Y-%m-%d"`
 
 mkdir -p isobuild/isodir/boot/grub
