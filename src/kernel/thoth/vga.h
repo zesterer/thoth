@@ -30,6 +30,9 @@ namespace thoth
 	void vgaSetCharacter(uint16 x, uint16 y, char character);
 	void vgaSetBackColor(uint16 x, uint16 y, VGAColor color);
 	void vgaSetFrontColor(uint16 x, uint16 y, VGAColor color);
+	void vgaSetValue(uint16 x, uint16 y, uint16 value);
+	
+	uint16 vgaGetValue(uint16 x, uint16 y);
 	
 	void vgaSetCursor(uint16 x, uint16 y);
 	

@@ -41,6 +41,16 @@ namespace thoth
 		VGA_BUFFER[y * VGA_WIDTH + x] |= (uint16)(color << 8);
 	}
 	
+	void vgaSetValue(uint16 x, uint16 y, uint16 value)
+	{
+		VGA_BUFFER[y * VGA_WIDTH + x] = value;
+	}
+	
+	uint16 vgaGetValue(uint16 x, uint16 y)
+	{
+		return VGA_BUFFER[y * VGA_WIDTH + x];
+	}
+	
 	void vgaSetCursor(uint16 x, uint16 y)
 	{
 		uint16 pos = y * VGA_WIDTH + x;
@@ -83,7 +93,9 @@ namespace thoth
 	
 	void message(const char* string)
 	{
-		puts("         ");
+		while (VGA_X < 9)
+			puts(" ");
+		
 		puts(string, 9);
 	}
 }
