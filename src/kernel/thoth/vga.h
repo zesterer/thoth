@@ -25,13 +25,6 @@ namespace thoth
 		VGA_WHITE = 15,
 	};
 	
-	const uint16 VGA_WIDTH = 80;
-	const uint16 VGA_HEIGHT = 25;
-	static uint16* VGA_BUFFER = (uint16*)0xB8000;
-	
-	static uint16 VGA_X = 0;
-	static uint16 VGA_Y = 0;
-	
 	void vgaInit();
 	
 	void vgaSetCharacter(uint16 x, uint16 y, char character);

@@ -6,12 +6,8 @@ environment = Environment(CC = "i686-elf-gcc",
 						  OBJCOPY = "i686-elf-objcopy")
 
 source_files = []
-include_dirs = []
 
 source_files += Glob('*.cpp')
-source_files += Glob('libstd/*.cpp')
-
-include_dirs += ["."]
-include_dirs += ["libstd"]
+source_files += Glob('libc/*.cpp')
 
 objects = environment.Object(source_files)

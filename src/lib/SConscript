@@ -8,9 +8,8 @@ environment = Environment(CC = "i686-elf-gcc",
 source_files = []
 include_dirs = []
 
-source_files += Glob("*.cpp")
-source_files += Glob("thoth/*.cpp")
+source_files += Glob("libc/*.c")
 
 include_dirs += ["../include/libc"]
 
-kernel_objects = environment.Object(source_files, CPPPATH = include_dirs)
+environment.Object(source_files, CPPPATH = include_dirs)

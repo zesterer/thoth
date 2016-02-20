@@ -4,6 +4,13 @@
 
 namespace thoth
 {
+	static uint16 VGA_WIDTH = 80;
+	static uint16 VGA_HEIGHT = 25;
+	static uint16* VGA_BUFFER = (uint16*)0xB8000;
+	
+	static uint16 VGA_X = 0;
+	static uint16 VGA_Y = 0;
+	
 	void vgaInit()
 	{
 		for (uint16 i = 0; i < VGA_WIDTH; i ++)
