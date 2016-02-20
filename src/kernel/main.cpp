@@ -13,7 +13,9 @@
 #include "thoth/vga.h"
 #include "thoth/assert.h"
 
-extern "C" //Use C to link kernel_main
+#include "stdlib.h"
+
+extern "C" //Use C to link kernelStart
 void kernelStart()
 {
 	//SquidOS::Kernel::Kernel kernel;
@@ -25,5 +27,14 @@ void kernelStart()
 	thoth::assert(true, "Initialised text-mode VGA buffer");
 	thoth::puts("\n");
 	
-	thoth::puts("Welcome to the Thoth operating system");
+	thoth::puts("Welcome to the Thoth operating system\n");
+	
+	//Testing the rand() function
+	srand(1337);
+	char l[2] = "A";
+	for (int i = 0; i < 10; i ++)
+	{
+		l[0] = 'A' + rand() % 26;
+		thoth::puts(l);
+	}
 }

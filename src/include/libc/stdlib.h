@@ -1,6 +1,11 @@
 #ifndef LIBC_STDLIB_H
 #define LIBC_STDLIB_H
 
+#ifdef _cplusplus
+extern "C"
+{
+#endif
+
 #include "stddef.h"
 
 //Types
@@ -60,5 +65,9 @@ int wctomb(char* pmb, wchar_t wc);
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
 #define RAND_MAX 32767
+
+#ifdef _cplusplus
+}
+#endif
 
 #endif

@@ -3,10 +3,9 @@ os_bin_name = project_name.lower() + ".bin"
 
 subdirs = []
 
-#Bootstrap
+subdirs += ["lib/SConscript"] #Libraries subdirectory
 subdirs += ["boot/SConscript"] #Bootstrap subdirectory
 subdirs += ["kernel/SConscript"] #Kernel subdirectory
-subdirs += ["lib/SConscript"] #Libraries subdirectory
 subdirs += ["app/SConscript"] #Programs subdirectory
 
 SConscript(subdirs) #Perform subdirectory tasks
@@ -18,15 +17,15 @@ environment = Environment(CC = "i686-elf-gcc",
 
 kernel_objects = []
 
+#Kernel standard library objects
+kernel_objects += Glob('lib/libk/*.o')
+
 #Bootstrap objects
 kernel_objects += Glob("boot/*.o")
 
 #Kernel objects
 kernel_objects += Glob('kernel/*.o')
 kernel_objects += Glob('kernel/thoth/*.o')
-
-#Library objects
-kernel_objects += Glob('lib/libc/*.o')
 
 
 #Link everything into the main kernel binary

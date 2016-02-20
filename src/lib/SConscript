@@ -1,15 +1,6 @@
-environment = Environment(CC = "i686-elf-gcc",
-						  CXX = "i686-elf-g++",
-						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
-						  LINKER = "i686-elf-g++",
-						  LINKFLAGS = "-T linker.ld -ffreestanding -O2 -nostdlib -lgcc",
-						  OBJCOPY = "i686-elf-objcopy")
+subdirs = []
 
-source_files = []
-include_dirs = []
+subdirs += ["libc/SConscript"] #Bootstrap subdirectory
+subdirs += ["libk/SConscript"] #Kernel subdirectory
 
-source_files += Glob("libc/*.c")
-
-include_dirs += ["../include/libc"]
-
-environment.Object(source_files, CPPPATH = include_dirs)
+SConscript(subdirs) #Perform subdirectory tasks

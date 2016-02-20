@@ -1,0 +1,15 @@
+#TODO - Implement user-space
+
+#environment = Environment(CC = "i686-elf-gcc",
+#						  CXX = "i686-elf-g++",
+#						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
+#						  OBJCOPY = "i686-elf-objcopy")
+#
+#source_files = []
+#include_dirs = []
+#
+#source_files += Glob("*.c")
+#
+#include_dirs += ["../../include/libc"]
+#
+#environment.Object(source_files, CPPPATH = include_dirs)

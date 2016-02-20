@@ -1,8 +1,6 @@
 environment = Environment(CC = "i686-elf-gcc",
 						  CXX = "i686-elf-g++",
 						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
-						  LINKER = "i686-elf-g++",
-						  LINKFLAGS = "-T linker.ld -ffreestanding -O2 -nostdlib -lgcc",
 						  OBJCOPY = "i686-elf-objcopy")
 
 source_files = []

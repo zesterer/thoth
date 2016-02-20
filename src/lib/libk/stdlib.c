@@ -1,5 +1,7 @@
 #include "stdlib.h"
 
+/* Pseudo-random sequence generation */
+
 static unsigned long next_rand = 1;
 
 int rand()
