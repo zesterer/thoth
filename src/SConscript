@@ -10,10 +10,10 @@ subdirs += ["app/SConscript"] #Programs subdirectory
 
 SConscript(subdirs) #Perform subdirectory tasks
 
-environment = Environment(CC = "i686-elf-gcc",
-						  CXX = "i686-elf-g++",
-						  LINKER = "i686-elf-g++",
-						  LINKFLAGS = "-T src/linker.ld -ffreestanding -O2 -nostdlib -lgcc")
+environment = Environment(CC = "x86_64-elf-gcc",
+						  CXX = "x86_64-elf-g++",
+						  LINKER = "x86_64-elf-g++",
+						  LINKFLAGS = "-T src/linker.ld -fpic -ffreestanding -O2 -nostdlib -lgcc -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -z max-page-size=4096")
 
 kernel_objects = []
 

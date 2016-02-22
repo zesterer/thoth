@@ -38,6 +38,8 @@ namespace thoth
 	
 	void puts(const char* string, uint16 border = 0);
 	void message(const char* string);
+	
+	void vgaDrawTextIcon(const char* icon, uint16 w, uint16 h);
 }
 
 #endif

@@ -1,78 +1,116 @@
-#Declare multiboot header creation constants
-.set ALIGN,		1 << 0				#Align loaded modules on page boundaries
-.set MEMINFO,	1 << 1				#Provide memory map
-.set FLAGS,		ALIGN | MEMINFO		#Multiboot 'flag' field
-.set MAGIC,		0x1BADB002			#Magic number helps bootloader find the header
-.set CHECKSUM,	-(MAGIC + FLAGS)	#Checksum of the above to prove it's multiboot
+// Currently the stack pointer register (esp) points at anything and using it may
+// cause massive harm. Instead, we'll provide our own stack. We will allocate
+// room for a small temporary stack by creating a symbol at the bottom of it,
+// then allocating 16384 bytes for it, and finally creating a symbol at the top.
 
-# Declare a header as in the Multiboot Standard. We put this into a special
-# section so we can force the header to be in the start of the final program.
-# You don't need to understand all these details as it is just magic values that
-# is documented in the multiboot standard. The bootloader will search for this
-# magic sequence and recognize us as a multiboot kernel.
-.section .multiboot
-.align 4
-.long MAGIC
-.long FLAGS
-.long CHECKSUM
+// This stack is being allocated a small region of 16 kilobytes. Once we have a
+// C environment running and we've entered long (64-bit) mode, we can define a
+// proper stack for the kernel. But for now, this temporary structure will
+// be sufficient until such a time where we can get a stable long (64-bit) mode
+// environment set up
 
-# Currently the stack pointer register (esp) points at anything and using it may
-# cause massive harm. Instead, we'll provide our own stack. We will allocate
-# room for a small temporary stack by creating a symbol at the bottom of it,
-# then allocating 16384 bytes for it, and finally creating a symbol at the top.
+//NOTE: On the x86 architecture, the stack grows DOWNWARD.
+
+// The @nobits directive specifies that this region should contain empty space only
 .section .bootstrap_stack, "aw", @nobits
-stack_bottom:
-.skip 16384 #16 KiB
-stack_top:
+	_stack_bottom:				//Add a label for the bottom of the stack
+	.skip 65536					//Define 64 KiB of memory for the stack
+	_stack_top:					//Add a label for the top of the stack
 
-# The linker script specifies _bootstrap as the entry point to the kernel and the
-# bootloader will jump to this position once the kernel has been loaded. It
-# doesn't make sense to return from this function as the bootloader is gone.
+// We're writing this code in 32-bit protected mode for now
+.code32
+
+// .section .text basically just says that this is read-only memory from now on
 .section .text
+
+// The linker script specifies _bootstrap as the entry point to the kernel and the
+// bootloader will jump to this position once the kernel has been loaded. It
+// doesn't make sense to return from this function as the bootloader is gone.
+
+// The 32-bit bootstrap procedure
 .global _bootstrap
 .type _bootstrap, @function
 _bootstrap:
-	# Welcome to kernel mode! We now have sufficient code for the bootloader to
-	# load and run our operating system. It doesn't do anything interesting yet.
-	# Perhaps we would like to call printf("Hello, World\n"). You should now
-	# realize one of the profound truths about kernel mode: There is nothing
-	# there unless you provide it yourself. There is no printf function. There
-	# is no <stdio.h> header. If you want a function, you will have to code it
-	# yourself. And that is one of the best things about kernel development:
-	# you get to make the entire system yourself. You have absolute and complete
-	# power over the machine, there are no security restrictions, no safe
-	# guards, no debugging mechanisms, there is nothing but what you build.
-
-	# By now, you are perhaps tired of assembly language. You realize some
-	# things simply cannot be done in C, such as making the multiboot header in
-	# the right section and setting up the stack. However, you would like to
-	# write the operating system in a higher level language, such as C or C++.
-	# To that end, the next task is preparing the processor for execution of
-	# such code. C doesn't expect much at this point and we only need to set up
-	# a stack. Note that the processor is not fully initialized yet and stuff
-	# such as floating point instructions are not available yet.
-
-	# To set up a stack, we simply set the esp register to point to the top of
-	# our stack (as it grows downwards).
-	movl $stack_top, %esp
 	
-	# We are now ready to actually execute C code. We cannot embed that in an
-	# assembly file, so we'll create a kernel.c file in a moment. In that file,
-	# we'll create a C entry point called kernelMain and call it here.
-	call kernelStart
-	
-	# In case the function returns, we'll want to put the computer into an
-	# infinite loop. To do that, we use the clear interrupt ('cli') instruction
-	# to disable interrupts, the halt instruction ('hlt') to stop the CPU until
-	# the next interrupt arrives, and jumping to the halt instruction if it ever
-	# continues execution, just to be safe. We will create a local label rather
-	# than real symbol and jump to there endlessly.
+	// Disable interrupts
 	cli
-	hlt
+	
+	// Set the stack pointer to the top of the temporary stack
+	movl $(_stack_top), %esp
+	
+	// Clear EBP and EFLAGS
+	mov $0, %ebp
+	pushl 0
+	popl %eax
 
-.Lhang:
-	jmp .Lhang
+	//Display 'THOTH' on the screen to show that we've actually booted
+	mov $(0xB8000 + 0x0), %eax
+	movb $84, (%eax)
+	mov $(0xB8000 + 0x2), %eax
+	movb $72, (%eax)
+	mov $(0xB8000 + 0x4), %eax
+	movb $79, (%eax)
+	mov $(0xB8000 + 0x6), %eax
+	movb $84, (%eax)
+	mov $(0xB8000 + 0x8), %eax
+	movb $72, (%eax)
+	
+	// Set up long (64-bit) mode
+	jmp _enter_long_mode
 
-# Set the size of the _bootstrap symbol to the current location '.' minus its start.
-# This is useful when debugging or when you implement call tracing.
-.size _bootstrap, . - _bootstrap
+// Define a CPU hang procedure (Useful if we want to put the CPU to sleep)
+.global _hang_cpu
+_hang_cpu:							//A hang procedure just in case the CPU ever wakes up for some reason
+	jmp _hang_cpu					//Jump back into the procedure (i.e: an infinite loop)
+
+// Long (64-bit) mode code from now on!
+.code64
+
+// The long (64-bit) mode bootstrap
+.global _start64
+_start64:
+	
+	// Here's the bit where we'd usually assign the page segments if we were
+	// using standard old x86. Instead, we're just bunging our segments in that
+	// tell the CPU it's allowed to access the entire address space (proper
+	// address partition is done with the paging system)
+	
+	// Grab the GDT and ram it into all the segment registers (although this should be ignored)
+	//mov $(_tmp_gdt_data0), %rax
+	//mov %rax, %ds				// Set ALL the segment registers
+	//mov %rax, %es				// Set ALL the segment registers
+	//mov %rax, %fs				// Set ALL the segment registers
+	//mov %rax, %gs				// Set ALL the segment registers
+	//mov %rax, %ss				// Set ALL the segment registers
+	
+	// Welcome to kernel mode! We now have sufficient code for the bootloader to
+	// load and run the operating system. It doesn't do anything interesting yet.
+	// Perhaps we would like to call printf("Hello, World\n"). You should now
+	// realize one of the profound truths about kernel mode: There is nothing
+	// there unless you provide it yourself. There is no printf function. There
+	// is no <stdio.h> header. If you want a function, you will have to code it
+	// yourself. And that is one of the best things about kernel development:
+	// you get to make the entire system yourself. You have absolute and complete
+	// power over the machine, there are no security restrictions, no safe
+	// guards, no debugging mechanisms, there is nothing but what you build.
+	
+	// Setup the 64-bit stack pointer
+	mov $(_stack_top), %rsp
+	
+	// We are now ready to actually execute C code. We cannot embed that in an
+	// assembly file, so we'll create a kernel.c file in a moment. In that file,
+	// we'll create a C entry point called kernelMain and call it here.
+	
+	call kernelStart			// Enter the kernelStart function (C)
+	
+	// In case the function returns, we'll want to put the computer into an
+	// infinite loop. To do that, we use the clear interrupt ('cli') instruction
+	// to disable interrupts, the halt instruction ('hlt') to stop the CPU until
+	// the next interrupt arrives, and jumping to the halt instruction if it ever
+	// continues execution, just to be safe. We will create a local label rather
+	// than real symbol and jump to there endlessly.
+	
+	cli							// Disable interrupts
+	hlt							// Halt the CPU
+	
+	jmp _hang_cpu					//Just in case

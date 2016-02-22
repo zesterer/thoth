@@ -4,9 +4,9 @@
 #include "thoth/types.h"
 
 struct Kernel
-{
-	void init();
-	void run();
+{	
+	static void init();
+	static void run();
 };
 
 #endif

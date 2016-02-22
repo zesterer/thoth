@@ -98,4 +98,20 @@ namespace thoth
 		
 		puts(string, 9);
 	}
+	
+	void vgaDrawTextIcon(const char* icon, uint16 w, uint16 h)
+	{
+		char tmp[2] = "p";
+		for (uint16 i = 0; i < w * h; i ++)
+		{
+			tmp[0] = icon[i];
+			puts(tmp);
+			
+			if (i % w == w - 1)
+			{
+				tmp[0] = '\n';
+				puts(tmp);
+			}
+		}
+	}
 }

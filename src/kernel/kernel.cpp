@@ -7,21 +7,29 @@
 #include "stdio.h"
 #include "string.h"
 
+static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
+
 void Kernel::init()
 {
+	//asm volatile("mov $(0xB8000 + 0x0), %rax\n"
+	//"movb $33, (%rax)\n"
+	//"jmp _hang_cpu");
 	thoth::vgaInit();
 	
-	thoth::assert(true, "Initialised C++ environment");
+	thoth::assert(true, "Set up temporary stack");
+	thoth::assert(true, "Initialised GDT and paging tables");
+	thoth::assert(true, "Switched to 64-bit long mode");
+	thoth::assert(true, "Initialised stable environment");
 	thoth::assert(true, "Jumped to kernel entry location");
 	thoth::assert(true, "Initialised text-mode VGA buffer");
 	
-	this->run();
+	Kernel::run();
 }
 
 void Kernel::run()
 {
+	thoth::vgaDrawTextIcon(thoth_logo, 55, 5);
 	thoth::puts("\n");
-	
 	thoth::puts("~ Welcome to the Thoth operating system ~\n");
 	
 	thoth::puts("\nBegin testing C standard library...\n\n");

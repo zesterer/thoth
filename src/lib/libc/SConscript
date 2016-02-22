@@ -1,9 +1,9 @@
 #TODO - Implement user-space
 
-#environment = Environment(CC = "i686-elf-gcc",
-#						  CXX = "i686-elf-g++",
+#environment = Environment(CC = "x86_64-elf-gcc",
+#						  CXX = "x86_64-elf-g++",
 #						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
-#						  OBJCOPY = "i686-elf-objcopy")
+#						  OBJCOPY = "x86_64-elf-objcopy")
 #
 #source_files = []
 #include_dirs = []

@@ -1,9 +1,9 @@
-environment = Environment(CC = "i686-elf-gcc",
-						  CXX = "i686-elf-g++",
-						  AS = "i686-elf-g++",
-						  ASFLAGS = "-fpic -ffreestanding -Wall -Wextra -c",
-						  CXXFLAGS = "-fpic -ffreestanding -Wall -Wextra -c",
-						  OBJCOPY = "i686-elf-objcopy")
+environment = Environment(CC = "x86_64-elf-gcc",
+						  CXX = "x86_64-elf-g++",
+						  AS = "x86_64-elf-g++",
+						  ASFLAGS = "-fpic -ffreestanding -Wall -Wextra -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c",
+						  CXXFLAGS = "-fpic -ffreestanding -Wall -Wextra -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c",
+						  OBJCOPY = "x86_64-elf-objcopy")
 
 source_files = []
 include_dirs = []
@@ -12,4 +12,4 @@ source_files += Glob('*.s')
 
 include_dirs += ["."]
 
-environment.Object("boot.o", source_files)
+environment.Object(source_files)

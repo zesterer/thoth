@@ -1,7 +1,7 @@
-environment = Environment(CC = "i686-elf-gcc",
-						  CXX = "i686-elf-g++",
-						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall",
-						  OBJCOPY = "i686-elf-objcopy")
+environment = Environment(CC = "x86_64-elf-gcc",
+						  CXX = "x86_64-elf-g++",
+						  CXXFLAGS = "-fpic -ffreestanding -std=gnu++11 -O2 -Wall -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c",
+						  OBJCOPY = "x86_64-elf-objcopy")
 
 source_files = []
 include_dirs = []
