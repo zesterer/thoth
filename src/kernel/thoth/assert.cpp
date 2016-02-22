@@ -2,14 +2,16 @@
 
 #include "vga.h"
 
+#include "stdio.h"
+
 namespace thoth
 {
 	bool assert(bool test, const char* message)
 	{
 		if (test)
-			puts("SUCCESS  ");
+			printf("%C2SUCCESS%CF  ");
 		else
-			puts("FAILURE  ");
+			printf("%C4FAILURE%CF  ");
 		
 		puts(message);
 		puts("\n");

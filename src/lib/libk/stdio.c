@@ -1,4 +1,5 @@
 #include "stdio.h"
+#include "string.h"
 
 #ifdef KERNEL_SPACE
 	#include "../../kernel/thoth/vga.h"
@@ -9,19 +10,24 @@
 #ifdef KERNEL_SPACE
 	int putchar(int character)
 	{
-		char char_str[2] = " ";
-		char_str[0] = (char)character;
-		thoth::puts(char_str);
+		thoth::vgaPutChar((char)character);
 	
-		if (char_str[0] == character)
+		if ((char)character == character)
 			return 1;
 		return 0;
 	}
 
 	int puts(const char* str)
 	{
-		thoth::puts(str);
+		thoth::vgaPuts(str);
 	
 		return 0;
+	}
+	
+	int printf(const char* format, ...)
+	{
+		thoth::vgaPrintf(format);
+		
+		return strlen(format);
 	}
 #endif

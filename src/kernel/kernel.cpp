@@ -7,7 +7,9 @@
 #include "stdio.h"
 #include "string.h"
 
-static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
+//static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
+
+static char* thoth_logo = (char*)"##################...######...#...####........###..##.....###.####...####.###....#######....########.....######.........###.........####........";
 
 void Kernel::init()
 {
@@ -28,23 +30,23 @@ void Kernel::init()
 
 void Kernel::run()
 {
-	thoth::vgaDrawTextIcon(thoth_logo, 55, 5);
-	thoth::puts("\n");
-	thoth::puts("~ Welcome to the Thoth operating system ~\n");
+	//thoth::vgaDrawTextIcon(thoth_logo, 12, 12);
+	puts("\n");
+	printf("%BF%C0Welcome to the %C6Thoth%C0 operating system%B0%CF\n");
 	
-	thoth::puts("\nBegin testing C standard library...\n\n");
+	puts("\nBegin testing C standard library...\n\n");
 	
 	//Pseudo-random sequence generation
 	
-	thoth::puts("Pseudo-random sequence generation...");
+	puts("Pseudo-random sequence generation...");
 	srand(1337);
 	char l[2] = "A";
 	for (int i = 0; i < 10; i ++)
 	{
 		l[0] = 'A' + rand() % 26;
-		thoth::puts(l);
+		puts(l);
 	}
-	thoth::puts("\n\n");
+	puts("\n\n");
 	
 	// String conversion
 	
@@ -62,4 +64,6 @@ void Kernel::run()
 	thoth::assert(strlen("Test") == 4, "Value of strlen(\"Test\") == 4");
 	thoth::assert(strlen("") == 0, "Value of strlen(\"\") == 0");
 	thoth::assert(strlen("Test\0Message") == 4, "Value of strlen(\"Test\\0Message\") == 4\n");
+	
+	puts("\n\n\n");
 }

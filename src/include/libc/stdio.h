@@ -18,7 +18,7 @@ extern "C"
 //TODO
 
 //Formatted input/output
-
+int printf(const char* format, ...);
 //TODO - complete this
 
 //Character input/output

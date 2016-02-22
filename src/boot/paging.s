@@ -1,6 +1,6 @@
 // This code is used to set up paging. This is obviously a long (64-bit) mode
 // only feature, so this code *should* be executed as part of the
-// _enter_compatibility procedure.
+// _enter_long_mode procedure.
 
 // Here we allocate enough space to make some page tables. We place them inside
 // the .bss because that has read/write permissions (and we'll need this for the

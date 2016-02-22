@@ -26,6 +26,7 @@ namespace thoth
 	};
 	
 	void vgaInit();
+	void vgaUpdate();
 	
 	void vgaSetCharacter(uint16 x, uint16 y, char character);
 	void vgaSetBackColor(uint16 x, uint16 y, VGAColor color);
@@ -36,10 +37,14 @@ namespace thoth
 	
 	void vgaSetCursor(uint16 x, uint16 y);
 	
-	void puts(const char* string, uint16 border = 0);
-	void message(const char* string);
+	void vgaPutChar(char character);
+	void vgaPuts(const char* string);
+	void vgaPrintf(const char* string);
 	
 	void vgaDrawTextIcon(const char* icon, uint16 w, uint16 h);
+	
+	// Useful utility functions
+	int8 getValueFromHexChar(char character);
 }
 
 #endif
