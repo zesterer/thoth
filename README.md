@@ -1,10 +1,12 @@
 #Thoth
 
-A modular, micro-kernel operating system for the future
+A modular, x86_64 micro-kernel operating system for the future
+
+![alt tag](https://raw.githubusercontent.com/zesterer/thoth/master/misc/screen-2016-02-22.png "A screenshot of Thoth's state as of 2016-02-22")
 
 ## Building
 
-Make sure you have an "i386-elf" build target version of gcc and binutils installed in a system-accessible location.
+Make sure you have an "x86_64-elf" build target version of gcc and binutils installed in a system-accessible location.
 
 Thoth uses the SCons build system. To compile the kernel, simply run scons in the root of the repository.
 
@@ -14,7 +16,7 @@ Thoth uses the SCons build system. To compile the kernel, simply run scons in th
 
 To run the compile kernel without a bootloader using QEMU, simply run the utility script provided
 
-`sh run-kernel-qemu.sh`
+`sh kernel-run-qemu.sh`
 
 ## Creating an ISO
 
@@ -24,4 +26,4 @@ Make sure you have the necessary grub tools installed.
 
 Run the iso with:
 
-`sh run-iso-qemu.sh`
+`sh iso-run-qemu.sh`
