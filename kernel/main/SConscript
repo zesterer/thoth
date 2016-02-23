@@ -1,0 +1,12 @@
+# Import variables that were passed upwards
+Import(["project_info", "kernel_build_environment"])
+
+# Define the objects required to link the kernel together
+
+source_files = []
+
+source_files += Glob("*.cpp")
+
+# Link the kernel
+
+kernel_objects = kernel_build_environment.Object(source_files, CPPPATH = ["../../include/libc", "../../include"])

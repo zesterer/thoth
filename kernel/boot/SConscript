@@ -1,0 +1,14 @@
+# Import variables that were passed upwards
+Import(["project_info", "kernel_build_environment"])
+
+# Enter the necessary subdirectories
+
+subdirs = []
+
+if project_info["target"] == "x86":
+	subdirs += ["x86/SConscript"]
+
+if project_info["target"] == "x86_64":
+	subdirs += ["x86_64/SConscript"]
+
+SConscript(subdirs, exports = ["project_info", "kernel_build_environment"])

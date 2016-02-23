@@ -1,0 +1,56 @@
+# Import variables that were passed upwards
+Import(["project_info"])
+
+# Define the kernel build environment
+
+kernel_linker_script = "linker.ld"
+kernel_defines = "-DKERNEL_SPACE -DTARGET=" + project_info["target"]
+
+kernel_defines += " -DVERSION_MAJOR=" + str(project_info["version_major"])
+kernel_defines += " -DVERSION_MINOR=" + str(project_info["version_minor"])
+kernel_defines += " -DVERSION_RELEASE=" + str(project_info["version_release"])
+
+kernel_flags = kernel_defines + " -fpic -ffreestanding -O2 -nostdlib -lgcc -Wall -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -z max-page-size=4096"
+
+
+kernel_build_environment = Environment	(
+										CC = "x86_64-elf-g++",
+										CXX = "x86_64-elf-g++",
+										AS = "x86_64-elf-g++",
+										ASFLAGS = "%s -c" % (kernel_flags),
+										LINKER = "x86_64-elf-g++",
+										LINKFLAGS = "-T kernel/linker.ld %s" % (kernel_flags),
+										CFLAGS = "%s -c" % (kernel_flags),
+										CXXFLAGS = "%s -std=gnu++11 -c" % (kernel_flags),
+										OBJCOPY = "x86_64-elf-objcopy"
+										)
+
+# Enter the necessary subdirectories
+
+subdirs = []
+
+subdirs += ["lib/SConscript"]
+subdirs += ["boot/SConscript"]
+subdirs += ["main/SConscript"]
+
+SConscript(subdirs, exports = ["project_info", "kernel_build_environment"])
+
+# Define the objects required to link the kernel together
+
+kernel_objects = []
+
+kernel_objects += Glob("lib/libc/*.o")
+kernel_objects += Glob("lib/libthoth/*.o")
+
+kernel_objects += Glob("boot/x86/*.o")
+kernel_objects += Glob("boot/x86_64/*.o")
+
+kernel_objects += Glob("main/*.o")
+
+# Link the kernel
+
+kernel_bin_name = project_info["name"].lower() + ".bin"
+
+kernel_bin = kernel_build_environment.Program(kernel_bin_name, kernel_objects)
+
+Depends(kernel_bin, kernel_linker_script)

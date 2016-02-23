@@ -1,6 +1,6 @@
-#include "assert.h"
+#include "libthoth/assert.h"
 
-#include "vga.h"
+#include "libthoth/vga.h"
 
 #include "stdio.h"
 

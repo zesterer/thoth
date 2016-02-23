@@ -2,7 +2,7 @@
 #include "string.h"
 
 #ifdef KERNEL_SPACE
-	#include "../../kernel/thoth/vga.h"
+	#include "libthoth/vga.h"
 #endif
 
 /* Character input/output */

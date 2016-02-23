@@ -1,6 +1,0 @@
-subdirs = []
-
-subdirs += ["libc/SConscript"] #Bootstrap subdirectory
-subdirs += ["libk/SConscript"] #Kernel subdirectory
-
-SConscript(subdirs) #Perform subdirectory tasks

@@ -1,0 +1,11 @@
+# Import variables that were passed upwards
+Import(["project_info", "kernel_build_environment"])
+
+# Enter the necessary subdirectories
+
+subdirs = []
+
+subdirs += ["libc/SConscript"]
+subdirs += ["libthoth/SConscript"]
+
+SConscript(subdirs, exports = ["project_info", "kernel_build_environment"])

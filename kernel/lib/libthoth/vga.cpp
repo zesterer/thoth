@@ -1,6 +1,7 @@
-#include "vga.h"
+#include "libthoth/vga.h"
 
-#include "sys.h"
+#include "libthoth/sys.h"
+
 #include "string.h"
 
 namespace thoth

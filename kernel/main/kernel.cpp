@@ -1,7 +1,7 @@
 #include "kernel.h"
 
-#include "thoth/vga.h"
-#include "thoth/assert.h"
+#include "libthoth/vga.h"
+#include "libthoth/assert.h"
 
 #include "stdlib.h"
 #include "stdio.h"
@@ -33,6 +33,13 @@ void Kernel::run()
 	//thoth::vgaDrawTextIcon(thoth_logo, 12, 12);
 	puts("\n");
 	printf("%BF%C0Welcome to the %C6Thoth%C0 operating system%B0%CF\n");
+	char version[6] = "X.Y.Z";
+	version[0] = '0' + VERSION_MAJOR;
+	version[2] = '0' + VERSION_MINOR;
+	version[4] = '0' + VERSION_RELEASE;
+	printf("Version %C4");
+	printf(version);
+	printf("%CF\n");
 	
 	puts("\nBegin testing C standard library...\n\n");
 	
