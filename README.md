@@ -2,7 +2,7 @@
 
 A modular, x86_64 micro-kernel operating system for the future
 
-![alt tag](https://raw.githubusercontent.com/zesterer/thoth/master/misc/screen-2016-02-22.png "A screenshot of Thoth's state as of 2016-02-22")
+![alt tag](https://raw.githubusercontent.com/zesterer/thoth/master/misc/screen-2016-02-23.png "A screenshot of Thoth's state as of 2016-02-23")
 
 ## Building
 
