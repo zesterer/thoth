@@ -3,6 +3,7 @@
 A modular, x86_64 micro-kernel operating system for the future
 
 ![alt tag](https://raw.githubusercontent.com/zesterer/thoth/master/misc/screen-2016-02-23.png "A screenshot of Thoth's state as of 2016-02-23")
+A screenshot of Thoth running on the QEMU virtual machine
 
 ## Building
 
@@ -27,3 +28,7 @@ Make sure you have the necessary grub tools installed.
 Run the iso with:
 
 `sh iso-run-qemu.sh`
+
+Alternatively, a script exists to run both of the above commands at once.
+
+`sh test.sh`
