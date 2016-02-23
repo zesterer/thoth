@@ -2,7 +2,7 @@
 
 #include "libthoth/vga.h"
 
-#include "stdio.h"
+#include "libc/stdio.h"
 
 namespace thoth
 {

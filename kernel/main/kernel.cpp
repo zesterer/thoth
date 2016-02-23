@@ -3,14 +3,24 @@
 #include "libthoth/vga.h"
 #include "libthoth/assert.h"
 #include "libthoth/sys.h"
+#include "libthoth/mem.h"
 
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
+#include "libc/stdlib.h"
+#include "libc/stdio.h"
+#include "libc/string.h"
 
 //static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
 
 //static char* thoth_logo = (char*)"##################...######...#...####........###..##.....###.####...####.###....#######....########.....######.........###.........####........";
+
+//A pointer to the end of the kernel
+extern void* _end_of_kernel asm("_end_of_kernel");
+
+struct Test
+{
+	int a;
+	int b;
+};
 
 void Kernel::init()
 {
@@ -44,42 +54,22 @@ void Kernel::run()
 	
 	puts("\nBegin testing C standard library...\n\n");
 	
-	//Pseudo-random sequence generation
+	//Allocate a dynamic memory manager 1MB after the end of the kernel of size 16MB
+	thoth::memSetDMM((void*)((size_t)(&_end_of_kernel) + 0x100000), (void*)((size_t)(&_end_of_kernel) + 0x1000000 - 1));
 	
-	puts("Pseudo-random sequence generation...");
-	srand(1337);
-	char l[2] = "A";
-	for (int i = 0; i < 10; i ++)
-	{
-		l[0] = 'A' + rand() % 26;
-		puts(l);
-	}
-	puts("\n\n");
-	
-	// String conversion
-	
-	thoth::assert(atoi("5") == 5, "Numerical conversion: atoi(\"5\") == 5");
-	thoth::assert(atoi("12704") == 12704, "Numerical conversion: atoi(\"12704\") == 12704");
-	thoth::assert(atoi("-14") == -14, "Numerical conversion: atoi(\"-14\") == -14");
-	thoth::assert(atoi("--875") == 875, "Numerical conversion: atoi(\"--875\") == 875");
-	
-	//stdio.h
-	
-	puts("\nThis message is a test of puts() in stdio.h, and the following '!' is a test of putchar(): ");
-	putchar('!');
-	puts("\n\n");
-	
-	thoth::assert(strlen("Test") == 4, "Value of strlen(\"Test\") == 4");
-	thoth::assert(strlen("") == 0, "Value of strlen(\"\") == 0");
-	thoth::assert(strlen("Test\0Message") == 4, "Value of strlen(\"Test\\0Message\") == 4\n");
-	
-	/*uint64 i = 0;
-	while (true)
-	{
-		if (thoth::readCPUTimestampCounter() / 0xF000000000000000 != i)
-		{
-			printf("CPU clocked 0x8,000,000,000,000,000 times!\n");
-			i = thoth::readCPUTimestampCounter() / 0xF000000000000000;
-		}
-	}*/
+	thoth::memPrintMap(0, 40);
+	void* a = malloc(4096); printf("\tAllocated a chunk of data 'a' of size 4096 bytes\n");
+	thoth::memPrintMap(0, 40);
+	void* b = malloc(4096); printf("\tAllocated a chunk of data 'b' of size 4096 bytes\n");
+	thoth::memPrintMap(0, 40);
+	free(a); printf("\tFreed chunk of data 'a' of size 4096 bytes\n");
+	thoth::memPrintMap(0, 40);
+	void* c = malloc(1024); printf("\tAllocated a chunk of data 'c' of size 1024 bytes\n");
+	thoth::memPrintMap(0, 40);
+	void* d = malloc(2048); printf("\tAllocated a chunk of data 'd' of size 2048 bytes\n");
+	thoth::memPrintMap(0, 40);
+	void* e = malloc(2048); printf("\tAllocated a chunk of data of size 2048 bytes\n");
+	thoth::memPrintMap(0, 40);
+	free(c); printf("\tFreed chunk of data 'c' of size 1024 bytes\n");
+	thoth::memPrintMap(0, 40);
 }

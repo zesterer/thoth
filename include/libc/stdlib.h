@@ -35,8 +35,9 @@ void srand(unsigned int seed);
 //Dynamic memory allocation
 //TODO
 //calloc
-//free
-//malloc
+void free(void* ptr);
+void* malloc(size_t size);
+void* operator new(size_t size);
 //realloc
 
 //Environment

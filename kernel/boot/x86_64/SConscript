@@ -9,4 +9,4 @@ source_files += Glob("*.s")
 
 # Compile the source files
 
-objects = kernel_build_environment.Object(source_files, CPPPATH = "include/libc")
+objects = kernel_build_environment.Object(source_files, CPPPATH = ["../../../include"])

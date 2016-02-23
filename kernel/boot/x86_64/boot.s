@@ -114,3 +114,7 @@ _start64:
 	hlt							// Halt the CPU
 	
 	jmp _hang_cpu					//Just in case
+
+.section .end_of_kernel
+.global _end_of_kernel
+_end_of_kernel:

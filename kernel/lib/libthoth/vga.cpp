@@ -2,7 +2,7 @@
 
 #include "libthoth/sys.h"
 
-#include "string.h"
+#include "libc/string.h"
 
 namespace thoth
 {
@@ -107,6 +107,13 @@ namespace thoth
 			case '\n':
 				VGA_X = 0;
 				VGA_Y ++;
+				output = false;
+				break;
+				
+			case '\t':
+				VGA_X ++;
+				while (VGA_X % 4 != 0)
+					VGA_X ++;
 				output = false;
 				break;
 			

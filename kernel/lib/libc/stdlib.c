@@ -1,4 +1,6 @@
-#include "stdlib.h"
+#include "libc/stdlib.h"
+
+#include "libthoth/mem.h"
 
 /* String conversion */
 
@@ -37,4 +39,21 @@ int rand()
 void srand(unsigned int seed)
 {
 	next_rand = seed;
+}
+
+/* Dynamic memory allocation */
+
+void free(void* ptr)
+{
+	thoth::memFreeBlock(ptr);
+}
+
+void* malloc(size_t size)
+{
+	return thoth::memAllocateBlock(size);
+}
+
+void* operator new(size_t size)
+{
+	return malloc(size);
 }

@@ -1,5 +1,5 @@
-#include "stdio.h"
-#include "string.h"
+#include "libc/stdio.h"
+#include "libc/string.h"
 
 #ifdef KERNEL_SPACE
 	#include "libthoth/vga.h"

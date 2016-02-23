@@ -10,4 +10,4 @@ source_files += Glob("*.cpp")
 
 # Compile the source files
 
-objects = kernel_build_environment.Object(source_files, CPPPATH = ["../../../include/libc", "../../../include"])
+objects = kernel_build_environment.Object(source_files, CPPPATH = ["../../../include"])
