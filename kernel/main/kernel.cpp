@@ -2,6 +2,7 @@
 
 #include "libthoth/vga.h"
 #include "libthoth/assert.h"
+#include "libthoth/sys.h"
 
 #include "stdlib.h"
 #include "stdio.h"
@@ -9,7 +10,7 @@
 
 //static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
 
-static char* thoth_logo = (char*)"##################...######...#...####........###..##.....###.####...####.###....#######....########.....######.........###.........####........";
+//static char* thoth_logo = (char*)"##################...######...#...####........###..##.....###.####...####.###....#######....########.....######.........###.........####........";
 
 void Kernel::init()
 {
@@ -72,5 +73,13 @@ void Kernel::run()
 	thoth::assert(strlen("") == 0, "Value of strlen(\"\") == 0");
 	thoth::assert(strlen("Test\0Message") == 4, "Value of strlen(\"Test\\0Message\") == 4\n");
 	
-	puts("\n\n\n");
+	/*uint64 i = 0;
+	while (true)
+	{
+		if (thoth::readCPUTimestampCounter() / 0xF000000000000000 != i)
+		{
+			printf("CPU clocked 0x8,000,000,000,000,000 times!\n");
+			i = thoth::readCPUTimestampCounter() / 0xF000000000000000;
+		}
+	}*/
 }

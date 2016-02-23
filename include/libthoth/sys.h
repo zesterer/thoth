@@ -52,6 +52,13 @@ namespace thoth
 		asm volatile("inl %[port], %[ret]" : [ret] "=a"(result) : [port] "Nd"(port));
 		return result;
 	}
+	
+	static inline uint64 readCPUTimestampCounter()
+	{
+		uint64 ret;
+		asm volatile ("rdtsc" : "=A"(ret));
+		return ret;
+	}
 }
 
 #endif

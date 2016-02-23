@@ -50,7 +50,10 @@ namespace thoth
 			for (int16 row = amount; row < VGA_HEIGHT; row ++)
 			{
 				for (int16 col = 0; col < VGA_WIDTH; col ++)
+				{
 					VGA_BUFFER[(row - amount) * VGA_WIDTH + col] = VGA_BUFFER[row * VGA_WIDTH + col];
+					VGA_BUFFER[row * VGA_WIDTH + col] = 0;
+				}
 			}
 		}
 	}

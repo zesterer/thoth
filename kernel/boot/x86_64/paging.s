@@ -8,6 +8,23 @@
 // that's not enough memory to do whatever the heck we want for now, I don't
 // know what is.
 
+// How paging works:
+// 
+//    PML4             PDP              PD           Physical Mem
+//  ________         ________         ________         ________
+// |________|       |________|       |________|       |________|
+// |________| ----> |________|       |________|       |________|
+// |________|       |________|       |________| ----> |________|
+// |________|       |________| ----> |________|       |________|
+// |________|       |________|       |________|       |________|
+// |________|       |________|       |________|       |________|
+// 
+// Since we're using 2MB pages...
+// ...We're creating 1 PML4 entry
+// ...We're creating 1x4 PDP entries
+// ...We're creating 1x4x512 PD entries
+// ...And so we're mapping 1x4x512x2MB = 4GB of physical memory
+
 .section .bss
 	.align 0x1000		// Align to 4KB (4096 bytes)
 
@@ -32,34 +49,40 @@ _construct_page_tables:		// A label so we can access this procedure from elsewhe
 	// *should* be already done, but since we can't guarantee this, we're going
 	// to clear it anyway.
 	
+	/* CLEAR PAGING TABLES */
+	
 	mov $(_page_map_level_4_top), %edi	// Put the PML4 pointer temporarily into a general-purpose register
 	mov %edi, %cr3					// Tell CR3 where the page tables are located
 	xor %eax, %eax					// Zero the accumulator just in case it wasn't already zero
-	mov $0x6000, %ecx				// Move 0x1800 (24KB) into the counter register
+	mov $0x6000, %ecx				// Move 0x6000 (24KB) into the counter register
 	rep								// Repeatedly copy the value in the accumulator (0) into memory, as per the number of times in the counter (6KB)
 	//stosd							// Copy EAX to EDI (Why? Not sure)
 	mov %cr3, %edi					// Copy CR3 into EDI
 	
-	// Create a PML4 entry (PML4E). This will map the 4GB of memory
+	/* FILL PML4 */
+	
+	// Create a PML4 entry (PML4E)
 	movl $0x1007, (%edi)				// Read/write and user-space permissions (note: 0x7 = 0b111) and 4KB offset. Presumably because this memory is aligned with 4KB anyway, any smaller value here is treated as data about permissions. Yes, it's confusing
 	addl $(_page_map_level_4_top), (%edi)	// Points to PML4 + 4KB (specified on line above ^)
 	
 	add $0x1000, %edi					// Now increment EDIto PML4 location + 4KB (The PDP Table)
+	
+	/* FILL PDP */
 	
 	// Now we're creating 4 Page Directory Pointer Entries (PDPE)
 	movl $0x2007, (%edi)		// Present, read/write permissions, user-space
 	addl $(_page_map_level_4_top), (%edi)	// Points to PML4 + 8KB
 	add $8, %edi //Increment to the next PDPE (we're making a table after all...)
 	
-	movl $0x2007, (%edi)		// Present, read/write permissions, user-space
+	movl $0x3007, (%edi)		// Present, read/write permissions, user-space
 	addl $(_page_map_level_4_top), (%edi)	// Points to PML4 + 12KB
 	add $8, %edi //Increment to the next PDPE
 	
-	movl $0x2007, (%edi)		// Present, read/write permissions, user-space
+	movl $0x4007, (%edi)		// Present, read/write permissions, user-space
 	addl $(_page_map_level_4_top), (%edi)	// Points to PML4 + 16KB
 	add $8, %edi //Increment to the next PDPE
 	
-	movl $0x2007, (%edi)		// Present, read/write permissions, user-space
+	movl $0x5007, (%edi)		// Present, read/write permissions, user-space
 	addl $(_page_map_level_4_top), (%edi)	// Points to PML4 + 20KB
 	// We don't need to increment this one... We're at the end of this PDP!
 	
@@ -68,6 +91,8 @@ _construct_page_tables:		// A label so we can access this procedure from elsewhe
 	// Here we go! The last part of page table construction. This is the weird
 	// part because we're looping. Keep all limbs within the vehicle, grab hold
 	// of your hair and kiss your sanity goodbye
+	
+	/* FILL PD */
 	
 	// Create 4 * 512 Page Directory Entries (PDE)
 	mov $0x00000087, %ebx		// Present, read/write, 2MB granularity (i.e: Each page is 2MB)
