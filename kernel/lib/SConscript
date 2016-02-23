@@ -6,6 +6,7 @@ Import(["project_info", "kernel_build_environment"])
 subdirs = []
 
 subdirs += ["libc/SConscript"]
+subdirs += ["libcpp/SConscript"]
 subdirs += ["libthoth/SConscript"]
 
 SConscript(subdirs, exports = ["project_info", "kernel_build_environment"])

@@ -21,11 +21,11 @@ namespace thoth
 	
 	size_t createdmmMap();
 	
-	int memSetDMM(void* base, void* end)
+	int memSetDMM(void* base, size_t size)
 	{
-		if (((size_t)base + block_size + dmm_map_entry_size) <= ((size_t)end)) //If we have enough memory space for at least one block
+		if (((size_t)base + block_size + dmm_map_entry_size) < ((size_t)base + size)) //If we have enough memory space for at least one block
 		{
-			dmm_size = ((size_t)end - (size_t)base) / block_size;
+			dmm_size = size / (1 + block_size);
 			dmm_base = (void*)((size_t)base);
 			dmm_start = (void*)((size_t)dmm_base + createdmmMap());
 			

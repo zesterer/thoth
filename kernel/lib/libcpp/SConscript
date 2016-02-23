@@ -1,0 +1,12 @@
+# Import variables that were passed upwards
+Import(["project_info", "kernel_build_environment"])
+
+# Define the source files
+
+source_files = []
+
+source_files += Glob("*.cpp")
+
+# Compile the source files
+
+objects = kernel_build_environment.Object(source_files, CPPPATH = ["../../../include"])

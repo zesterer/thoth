@@ -9,6 +9,8 @@
 #include "libc/stdio.h"
 #include "libc/string.h"
 
+#include "libcpp/new"
+
 //static char* thoth_logo = (char*)"          ________         _____ _           _   _         _____/ o  \\   \\_      |_   _| |__   ___ | |_| |__     / ____     |     \\       | | | '_ \\ / _ \\| __| '_ \\   //     \\    /      |      | | | | | | (_) | |_| | | |  '       )__(______/       |_| |_| |_|\\___/ \\__|_| |_|";
 
 //static char* thoth_logo = (char*)"##################...######...#...####........###..##.....###.####...####.###....#######....########.....######.........###.........####........";
@@ -35,6 +37,8 @@ void Kernel::init()
 	thoth::assert(true, "Initialised stable environment");
 	thoth::assert(true, "Jumped to kernel entry location");
 	thoth::assert(true, "Initialised text-mode VGA buffer");
+	asm volatile ("cli");
+	thoth::assert(thoth::getInterruptsEnabled(), "Testing for interrupts enabled");
 	
 	Kernel::run();
 }
@@ -54,9 +58,9 @@ void Kernel::run()
 	
 	puts("\nBegin testing C standard library...\n\n");
 	
-	//Allocate a dynamic memory manager 1MB after the end of the kernel of size 16MB
-	thoth::memSetDMM((void*)((size_t)(&_end_of_kernel) + 0x100000), (void*)((size_t)(&_end_of_kernel) + 0x1000000 - 1));
-	
+	//Allocate a dynamic memory manager after the end of the kernel of size 64MB
+	thoth::memSetDMM(&_end_of_kernel, 0x4000000);
+	/*
 	thoth::memPrintMap(0, 40);
 	void* a = malloc(4096); printf("\tAllocated a chunk of data 'a' of size 4096 bytes\n");
 	thoth::memPrintMap(0, 40);
@@ -72,4 +76,8 @@ void Kernel::run()
 	thoth::memPrintMap(0, 40);
 	free(c); printf("\tFreed chunk of data 'c' of size 1024 bytes\n");
 	thoth::memPrintMap(0, 40);
+	Test* atest = new Test();
+	thoth::memPrintMap(0, 40);
+	delete atest;
+	thoth::memPrintMap(0, 40);*/
 }

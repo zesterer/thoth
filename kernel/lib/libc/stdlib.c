@@ -52,8 +52,3 @@ void* malloc(size_t size)
 {
 	return thoth::memAllocateBlock(size);
 }
-
-void* operator new(size_t size)
-{
-	return malloc(size);
-}

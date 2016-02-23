@@ -37,7 +37,6 @@ void srand(unsigned int seed);
 //calloc
 void free(void* ptr);
 void* malloc(size_t size);
-void* operator new(size_t size);
 //realloc
 
 //Environment

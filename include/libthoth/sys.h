@@ -53,11 +53,18 @@ namespace thoth
 		return result;
 	}
 	
-	static inline uint64 readCPUTimestampCounter()
+	static inline bool getInterruptsEnabled()
 	{
 		uint64 ret;
 		asm volatile ("rdtsc" : "=A"(ret));
 		return ret;
+	}
+	
+	static inline uint64 readCPUTimestampCounter()
+	{
+		unsigned long flags;
+		asm volatile("pushf\npop %0" : "=g"(flags));
+		return flags & (1 << 9);
 	}
 }
 

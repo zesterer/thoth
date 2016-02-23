@@ -1,0 +1,14 @@
+#ifndef LIBCPP_NEW
+#define LIBCPP_NEW
+
+#include "libc/stdio.h"
+
+// New operators
+void* operator new(size_t size);
+void* operator new[](size_t size);
+
+// Delete operators
+void operator delete(void* ptr);
+void operator delete[](void* ptr);
+
+#endif

@@ -40,6 +40,7 @@ SConscript(subdirs, exports = ["project_info", "kernel_build_environment"])
 kernel_objects = []
 
 kernel_objects += Glob("lib/libc/*.o")
+kernel_objects += Glob("lib/libcpp/*.o")
 kernel_objects += Glob("lib/libthoth/*.o")
 
 kernel_objects += Glob("boot/x86/*.o")
