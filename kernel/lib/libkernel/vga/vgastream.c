@@ -188,5 +188,10 @@ void vga_stream_write_byte(stream* strm, byte value)
 void vga_stream_write(stream* strm, const byte* data, sysint size)
 {
 	for (uint i = 0; i < size; i ++)
-		vga_stream_write_byte(strm, data[i]);
+	{
+		bool output = true;
+			
+		if (output)
+			vga_stream_write_byte(strm, data[i]);
+	}
 }

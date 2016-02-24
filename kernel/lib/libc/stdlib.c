@@ -26,6 +26,43 @@ int atoi(const char* str)
 	return total * sign;
 }
 
+char* itoa(int value, char* str, int base)
+{
+	long v = 1;
+	int i = 0;
+	
+	if (base < 2 || base > 32)
+		return str;
+	
+	if (value < 0 && base == 10)
+	{
+		str[i] = '-';
+		i ++;
+	}
+	
+	value = abs(value);
+	
+	while (v < ((long)1 << (sizeof(int) * 8)))
+		v *= base;
+	
+	while (v > 0)
+	{
+		if (value / v > 0)
+		{
+			if ((value / v) % base > 9)
+				str[i] = 'A' + (value / v) % base - 10;
+			else
+				str[i] = '0' + (value / v) % base;
+			
+			i ++;
+		}
+		v /= base;
+	}
+	
+	str[i] = '\0';
+	return str;
+}
+
 /* Pseudo-random sequence generation */
 
 static unsigned long next_rand = 1;
@@ -51,4 +88,11 @@ void free(void* ptr)
 void* malloc(size_t size)
 {
 	return thoth::memAllocateBlock(size);
+}
+
+/* Integer arithmetics */
+
+int abs(int n)
+{
+	return n < 0 ? -n : n;
 }

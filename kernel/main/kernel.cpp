@@ -11,6 +11,7 @@
 #include "libc/stdlib.h"
 #include "libc/stdio.h"
 #include "libc/string.h"
+#include "libc/assert.h"
 
 #include "libcpp/new"
 
@@ -21,27 +22,29 @@
 //A pointer to the end of the kernel
 extern void* _end_of_kernel asm("_end_of_kernel");
 
-struct Test
-{
-	int a;
-	int b;
-};
-
 void Kernel::init()
 {
 	// Must come BEFORE any printing functions!
 	vga_default_stream_init();
 	
-	thoth::assert(true, "Set up temporary stack");
-	thoth::assert(true, "Initialised GDT and paging tables");
-	thoth::assert(true, "Switched to 64-bit long mode");
-	thoth::assert(true, "Initialised stable environment");
-	thoth::assert(true, "Jumped to kernel entry location");
-	thoth::assert(true, "Initialised text-mode VGA buffer");
-	thoth::assert(thoth::getInterruptsEnabled(), "Testing for interrupts enabled");
+	assert_test(true, "Set up temporary stack");
+	assert_test(true, "Initialised GDT and paging tables");
+	assert_test(true, "Switched to 64-bit long mode");
+	assert_test(true, "Initialised stable environment");
+	assert_test(true, "Jumped to kernel entry location");
+	assert_test(true, "Initialised text-mode VGA buffer");
+	assert_test(thoth::getInterruptsEnabled(), "Testing for interrupts enabled");
+	
+	char a[sizeof(int) * 8 + 1];
+	for (int i = 2; i <= 16; i ++)
+	{
+		itoa(-137, a, i);
+		printf(a);
+		putchar('\n');
+	}
 	
 	bool enabled_dmm = thoth::memSetDMM(&_end_of_kernel, 0x4000000) == 0;
-	thoth::assert(enabled_dmm, "Setting up DMM");
+	assert_test(enabled_dmm, "Setting up DMM");
 	
 	Kernel::run();
 }
@@ -58,29 +61,4 @@ void Kernel::run()
 	printf("Version %C4");
 	printf(version);
 	printf("%CF\n");
-	
-	/*puts("\nBegin testing C standard library...\n\n");
-	
-	//Allocate a dynamic memory manager after the end of the kernel of size 0x4000000 (64MB)
-	thoth::memSetDMM(&_end_of_kernel, 0x2400);
-	
-	thoth::memPrintMap(0, 40);
-	void* a = malloc(4096); printf("\tAllocated a chunk of data 'a' of size 4096 bytes\n");
-	thoth::memPrintMap(0, 40);
-	void* b = malloc(4096); printf("\tAllocated a chunk of data 'b' of size 4096 bytes\n");
-	thoth::memPrintMap(0, 40);
-	free(a); printf("\tFreed chunk of data 'a' of size 4096 bytes\n");
-	thoth::memPrintMap(0, 40);
-	void* c = malloc(3); printf("\tAllocated a chunk of data 'c' of size 3 bytes\n");
-	thoth::memPrintMap(0, 40);
-	void* d = malloc(2048); printf("\tAllocated a chunk of data 'd' of size 2048 bytes\n");
-	thoth::memPrintMap(0, 40);
-	void* e = malloc(2048); printf("\tAllocated a chunk of data of size 2048 bytes\n");
-	thoth::memPrintMap(0, 40);
-	free(c); printf("\tFreed chunk of data 'c' of size 1024 bytes\n");
-	thoth::memPrintMap(0, 40);
-	Test* atest = new Test();
-	thoth::memPrintMap(0, 40);
-	delete atest;
-	thoth::memPrintMap(0, 40);*/
 }
