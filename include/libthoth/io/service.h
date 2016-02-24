@@ -19,45 +19,31 @@
 */
 
 /*
-* Name:         vga.c
+* Name:         service.h
 * 
-* Description:  Utilities to interface with a system's VGA device
+* Description:  Utilities to interface with services
 * 
 * Notes:        NONE
 */
 
+#ifndef LIBTHOTH_IO_SERVICE_H
+#define LIBTHOTH_IO_SERVICE_H
+
 // Local
-#include "libc/stdio.h"
-#include "libc/string.h"
+#include "libthoth/type.h"
 
-// libkernel
-#include "libkernel/vga/vgastream.h"
-
-/* Character input/output */
-
-int putchar(int character)
+// Service data constants
+enum
 {
-	vga_get_default_stream()->write_byte((stream*)vga_get_default_stream(), (char)character);
-
-	if ((char)character == character)
-		return 1;
-	return 0;
+	SERVICE_RESPONSE_OK = 0;
+	SERVICE_RESPONSE_ERROR = 1;
+	SERVICE_RESPONSE_
 }
 
-int puts(const char* str)
-{
-	size_t len = strlen(str);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)str, len);
+// Service identifier
+typedef uint64 service_id;
 
-	return 0;
-}
+// Service utility functions
+void service_communicate(service_id id, addr* response_message, sysint* response_size, addr, addr send_message, sysint send_size);
 
-int printf(const char* format, ...)
-{
-	size_t len = strlen(format);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)format, len);
-	
-	return len;
-}
+#endif

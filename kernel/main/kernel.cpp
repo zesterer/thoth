@@ -5,6 +5,9 @@
 #include "libthoth/sys.h"
 #include "libthoth/mem.h"
 
+#include "libkernel/vga/vga.h"
+#include "libkernel/vga/vgastream.h"
+
 #include "libc/stdlib.h"
 #include "libc/stdio.h"
 #include "libc/string.h"
@@ -26,10 +29,8 @@ struct Test
 
 void Kernel::init()
 {
-	//asm volatile("mov $(0xB8000 + 0x0), %rax\n"
-	//"movb $33, (%rax)\n"
-	//"jmp _hang_cpu");
-	thoth::vgaInit();
+	// Must come BEFORE any printing functions!
+	vga_default_stream_init();
 	
 	thoth::assert(true, "Set up temporary stack");
 	thoth::assert(true, "Initialised GDT and paging tables");
@@ -37,8 +38,10 @@ void Kernel::init()
 	thoth::assert(true, "Initialised stable environment");
 	thoth::assert(true, "Jumped to kernel entry location");
 	thoth::assert(true, "Initialised text-mode VGA buffer");
-	asm volatile ("cli");
 	thoth::assert(thoth::getInterruptsEnabled(), "Testing for interrupts enabled");
+	
+	bool enabled_dmm = thoth::memSetDMM(&_end_of_kernel, 0x4000000) == 0;
+	thoth::assert(enabled_dmm, "Setting up DMM");
 	
 	Kernel::run();
 }
@@ -56,11 +59,11 @@ void Kernel::run()
 	printf(version);
 	printf("%CF\n");
 	
-	puts("\nBegin testing C standard library...\n\n");
+	/*puts("\nBegin testing C standard library...\n\n");
 	
-	//Allocate a dynamic memory manager after the end of the kernel of size 64MB
-	thoth::memSetDMM(&_end_of_kernel, 0x4000000);
-	/*
+	//Allocate a dynamic memory manager after the end of the kernel of size 0x4000000 (64MB)
+	thoth::memSetDMM(&_end_of_kernel, 0x2400);
+	
 	thoth::memPrintMap(0, 40);
 	void* a = malloc(4096); printf("\tAllocated a chunk of data 'a' of size 4096 bytes\n");
 	thoth::memPrintMap(0, 40);
@@ -68,7 +71,7 @@ void Kernel::run()
 	thoth::memPrintMap(0, 40);
 	free(a); printf("\tFreed chunk of data 'a' of size 4096 bytes\n");
 	thoth::memPrintMap(0, 40);
-	void* c = malloc(1024); printf("\tAllocated a chunk of data 'c' of size 1024 bytes\n");
+	void* c = malloc(3); printf("\tAllocated a chunk of data 'c' of size 3 bytes\n");
 	thoth::memPrintMap(0, 40);
 	void* d = malloc(2048); printf("\tAllocated a chunk of data 'd' of size 2048 bytes\n");
 	thoth::memPrintMap(0, 40);

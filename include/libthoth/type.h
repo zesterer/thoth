@@ -19,45 +19,46 @@
 */
 
 /*
-* Name:         vga.c
+* Name:         type.h
 * 
-* Description:  Utilities to interface with a system's VGA device
+* Description:  Commonly used datatypes
 * 
 * Notes:        NONE
 */
 
-// Local
-#include "libc/stdio.h"
-#include "libc/string.h"
+#ifndef LIBTHOTH_CORE_TYPE_H
+#define LIBTHOTH_CORE_TYPE_H
 
-// libkernel
-#include "libkernel/vga/vgastream.h"
+// GCC standard headers
+#include "stddef.h"
+#include "stdint.h"
 
-/* Character input/output */
+// System types
+typedef uint8_t  byte;
+typedef uint16_t word;
+typedef uint32_t dword;
+typedef uint64_t qword;
 
-int putchar(int character)
-{
-	vga_get_default_stream()->write_byte((stream*)vga_get_default_stream(), (char)character);
+// Pointer types
+typedef void*  addr;
+typedef size_t sysint;
 
-	if ((char)character == character)
-		return 1;
-	return 0;
-}
+// Unsigned integer types
+typedef uint8_t  uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
 
-int puts(const char* str)
-{
-	size_t len = strlen(str);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)str, len);
+// Signed integer types
+typedef int8_t  int8;
+typedef int16_t int16;
+typedef int32_t int32;
+typedef int64_t int64;
 
-	return 0;
-}
+// Unsigned versions of existing types
+typedef unsigned char  uchar;
+typedef unsigned short ushort;
+typedef unsigned int   uint;
+typedef unsigned long  ulong;
 
-int printf(const char* format, ...)
-{
-	size_t len = strlen(format);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)format, len);
-	
-	return len;
-}
+#endif

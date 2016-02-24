@@ -1,5 +1,7 @@
 #include "libthoth/vga.h"
 
+#include "libkernel/vga/vga.h"
+
 #include "libthoth/sys.h"
 
 #include "libc/string.h"

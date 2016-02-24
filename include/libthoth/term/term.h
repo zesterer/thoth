@@ -19,45 +19,25 @@
 */
 
 /*
-* Name:         vga.c
+* Name:         term.h
 * 
-* Description:  Utilities to interface with a system's VGA device
+* Description:  Utilities to interface with services
 * 
 * Notes:        NONE
 */
 
+#ifndef LIBTHOTH_TERM_TERM_H
+#define LIBTHOTH_TERM_TERM_H
+
 // Local
-#include "libc/stdio.h"
-#include "libc/string.h"
+#include "libthoth/term/term.h"
 
-// libkernel
-#include "libkernel/vga/vgastream.h"
+// Terminal definition
 
-/* Character input/output */
+// Service identifier
+typedef uint64 service_id;
 
-int putchar(int character)
-{
-	vga_get_default_stream()->write_byte((stream*)vga_get_default_stream(), (char)character);
+// Service utility functions
+void service_communicate(service_id id, addr* response_message, sysint* response_size, addr, addr send_message, sysint send_size);
 
-	if ((char)character == character)
-		return 1;
-	return 0;
-}
-
-int puts(const char* str)
-{
-	size_t len = strlen(str);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)str, len);
-
-	return 0;
-}
-
-int printf(const char* format, ...)
-{
-	size_t len = strlen(format);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)format, len);
-	
-	return len;
-}
+#endif

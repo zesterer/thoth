@@ -1,5 +1,7 @@
 #include "libthoth/mem.h"
 
+#include "libthoth/vga.h"
+
 #include "libc/stdio.h"
 #include "libc/string.h"
 
@@ -31,12 +33,12 @@ namespace thoth
 			
 			dmm_is_valid = true;
 			
-			printf("Allocated DMM in memory\n");
+			//printf("Allocated DMM in memory\n");
 			return 0;
 		}
 		else
 		{
-			printf("%C4Error%CF: %C4Attempted to define space for a dmm, but there is not enough to contain a single block%CF");
+			//printf("%C4Error%CF: %C4Attempted to define space for a DMM, but there is not enough to contain a single block%CF");
 			return 1;
 		}
 	}
@@ -54,10 +56,10 @@ namespace thoth
 	void* memAllocateBlock(size_t size)
 	{
 		if (!dmm_is_valid)
-			printf("%C4Error%CF: %C4Tried to allocate dmm memory block, but the dmm has not been created yet%CF");
+			printf("%C4Error%CF: %C4Tried to allocate DMM memory block, but the dmm has not been created yet%CF");
 		
 		if (size <= 0)
-			printf("%C4Error%CF: %C4Tried to allocate dmm memory block, but size was zero%CF");
+			printf("%C4Error%CF: %C4Tried to allocate DMM memory block, but size was zero%CF");
 		
 		size_t blocks_needed = ((size - 1) / block_size) + 1;
 		
@@ -103,7 +105,7 @@ namespace thoth
 		}
 		
 		//Couldn't find enough space
-		printf("%C4Error%CF: %C4Attempted to allocate block on dmm, but there is not enough free space%CF");
+		printf("%C4Error%CF: %C4Attempted to allocate block on DMM, but there is not enough free space%CF");
 		return nullptr;
 	}
 	
@@ -111,19 +113,19 @@ namespace thoth
 	{
 		if (!dmm_is_valid)
 		{
-			printf("%C4Error%CF: %C4Tried to free dmm memory block, but the dmm has not been created yet%CF");
+			printf("%C4Error%CF: %C4Tried to free DMM memory block, but the dmm has not been created yet%CF");
 			return 1;
 		}
 		
 		if (pointer < dmm_start || (size_t)pointer > ((size_t)dmm_start + dmm_size * block_size))
 		{
-			printf("%C4Error%CF: %C4Pointer to free is not within dmm bounds%CF");
+			printf("%C4Error%CF: %C4Pointer to free is not within DMM bounds%CF");
 			return 2;
 		}
 		
 		if (((size_t)pointer - (size_t)dmm_start) % block_size != 0)
 		{
-			printf("%C4Error%CF: %C4Pointer to free was not aligned to dmm blocks%CF");
+			printf("%C4Error%CF: %C4Pointer to free was not aligned to DMM blocks%CF");
 			return 3;
 		}
 		
@@ -150,7 +152,7 @@ namespace thoth
 		}
 		else
 		{
-			printf("%C4Error%CF: %C4dmm corruption, invalid map entry detected%CF");
+			printf("%C4Error%CF: %C4dmm corruption, invalid map entry detected in DMM%CF");
 			dmm_is_valid = false; //Something went seriously wrong, so tell it to just stop
 			return 4;
 		}
@@ -160,7 +162,7 @@ namespace thoth
 	
 	void memPrintMap(size_t start, size_t end)
 	{
-		for (size_t i = start; i < end; i ++)
+		for (size_t i = start; i < end && i < dmm_size; i ++)
 		{
 			if (dmm_map[i] == MAP_FILLED)
 				puts("H");

@@ -19,45 +19,33 @@
 */
 
 /*
-* Name:         vga.c
+* Name:         stream.h
 * 
-* Description:  Utilities to interface with a system's VGA device
+* Description:  A generic interface to stream objects
 * 
 * Notes:        NONE
 */
 
+#ifndef LIBTHOTH_STREAM_STREAM_H
+#define LIBTHOTH_STREAM_STREAM_H
+
 // Local
-#include "libc/stdio.h"
-#include "libc/string.h"
+#include "libthoth/type.h"
 
-// libkernel
-#include "libkernel/vga/vgastream.h"
+// Stream definition
+struct stream;
 
-/* Character input/output */
+// Stream utility functions
+typedef void (*fptr_stream_init)(stream* strm);
+typedef void (*fptr_stream_write_byte)(stream* strm, byte value);
+typedef void (*fptr_stream_write)(stream* strm, const byte* data, sysint size);
 
-int putchar(int character)
+// Stream implementation
+struct stream
 {
-	vga_get_default_stream()->write_byte((stream*)vga_get_default_stream(), (char)character);
+	fptr_stream_init init;
+	fptr_stream_write_byte write_byte;
+	fptr_stream_write write;
+};
 
-	if ((char)character == character)
-		return 1;
-	return 0;
-}
-
-int puts(const char* str)
-{
-	size_t len = strlen(str);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)str, len);
-
-	return 0;
-}
-
-int printf(const char* format, ...)
-{
-	size_t len = strlen(format);
-	
-	vga_get_default_stream()->write((stream*)vga_get_default_stream(), (byte*)format, len);
-	
-	return len;
-}
+#endif
