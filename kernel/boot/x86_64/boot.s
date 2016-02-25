@@ -1,3 +1,31 @@
+/*
+* This file is part of Thoth.
+* 
+* Copyright (C) 2016  Joshua Barretto <joshua.s.barretto@gmail.com>
+* 
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+* Name:         boot.s
+* 
+* Description:  x86_64 pre-kernel boot code
+* 
+* Notes:        NONE
+*/
+
 // Currently the stack pointer register (esp) points at anything and using it may
 // cause massive harm. Instead, we'll provide our own stack. We will allocate
 // room for a small temporary stack by creating a symbol at the bottom of it,
