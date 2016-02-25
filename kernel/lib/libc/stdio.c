@@ -87,6 +87,7 @@ int printf(const char* format, ...)
 						// Write the string we found in the gap
 						char* str = va_arg(args, char*);
 						strm->write(strm, (byte*)str, strlen(str)); // Write the inserted string
+						len += strlen(str);
 						last = i + 2; // The string format sequence was 2 characters long
 						break;
 					}
@@ -117,6 +118,7 @@ int printf(const char* format, ...)
 						}
 						
 						strm->write(strm, (byte*)str, strlen(str)); // Write the inserted string
+						len += strlen(str);
 						last = i + 2; // The string format sequence was 2 characters long
 						break;
 					}

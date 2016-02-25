@@ -26,30 +26,21 @@
 * Notes:        NONE
 */
 
-#ifndef LIBKERNEL_SYS_OUT_H
-#define LIBKERNEL_SYS_OUT_H
+#ifndef LIBKERNEL_INTERRUPT_IDT_H
+#define LIBKERNEL_INTERRUPT_IDT_H
 
-// Local
+// libthoth
 #include "libthoth/type.h"
 
-// Output functions
-static inline void outb(uint16 port, uint8 value)
+struct idt_entry __attribute__((packed))
 {
-	asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));
-	/* There's an outb %al, $imm8  encoding, for compile-time constant port numbers that fit in 8b.  (N constraint).
-	* Wider immediate constants would be truncated at assemble-time (e.g. "i" constraint).
-	* The  outb  %al, %dx  encoding is the only option for all other cases.
-	* %1 expands to %dx because  port  is a uint16_t.  %w1 could be used if we had the port number a wider C type */
-}
-
-static inline void outw(uint16 port, uint16 value)
-{
-	asm volatile("outw %0, %1" : : "a"(value), "Nd"(port));
-}
-
-static inline void outl(uint16 port, uint32 value)
-{
-	asm volatile("outl %0, %1" : : "a"(value), "Nd"(port));
-}
+	uint16 offset_low;
+	uint16 selector;
+	uint8 zero1;
+	uint8 type_attributes;
+	uint16 offset_mid;
+	uint32 offset_high;
+	uint32 zero2;
+};
 
 #endif
