@@ -81,7 +81,7 @@ int printf(const char* format, ...)
 				
 				switch (format[i + 1])
 				{
-					case 'c': // We're writing a string
+					case 's': // We're writing a string
 					{
 						strm->write(strm, (byte*)&(format[last]), i - last); // Write the string so far
 						// Write the string we found in the gap
@@ -119,6 +119,17 @@ int printf(const char* format, ...)
 						
 						strm->write(strm, (byte*)str, strlen(str)); // Write the inserted string
 						len += strlen(str);
+						last = i + 2; // The string format sequence was 2 characters long
+						break;
+					}
+					case 'c':
+					{
+						strm->write(strm, (byte*)&(format[last]), i - last); // Write the string so far
+						
+						// Write the character we found in the gap
+						char character = (char)va_arg(args, int);
+						strm->write_byte(strm, (byte)character); // Write the inserted string
+						len ++;
 						last = i + 2; // The string format sequence was 2 characters long
 						break;
 					}

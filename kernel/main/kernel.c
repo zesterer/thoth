@@ -79,5 +79,5 @@ void kernel_run()
 	printf(version);
 	printf("\\CF\n");
 	
-	printf("Hello! I'm %d testing %c printf %x %X output %u .\n", 1378, "the", 0xDEAD, 0xBEEF, -13);
+	printf("%c Hello! I'm %d testing %s printf %x %X output %u .\n", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
 }
