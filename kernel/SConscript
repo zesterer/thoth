@@ -12,18 +12,19 @@ kernel_defines += " -DVERSION_RELEASE=" + str(project_info["version_release"])
 
 kernel_flags = kernel_defines + " -fpic -ffreestanding -O2 -nostdlib -lgcc -Wall -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -z max-page-size=4096"
 
+# Define the kernel's build environment
 
-kernel_build_environment = Environment	(
-										CC = "x86_64-elf-g++",
-										CXX = "x86_64-elf-g++",
-										AS = "x86_64-elf-g++",
-										ASFLAGS = "%s -c" % (kernel_flags),
-										LINKER = "x86_64-elf-g++",
-										LINKFLAGS = "-T kernel/linker.ld %s" % (kernel_flags),
-										CFLAGS = "%s -c" % (kernel_flags),
-										CXXFLAGS = "%s -std=gnu++11 -c" % (kernel_flags),
-										OBJCOPY = "x86_64-elf-objcopy"
-										)
+kernel_build_environment = Environment(
+CC = "x86_64-elf-g++",
+CXX = "x86_64-elf-g++",
+AS = "x86_64-elf-g++",
+ASFLAGS = "%s -c" % (kernel_flags),
+LINKER = "x86_64-elf-g++",
+LINKFLAGS = "-T kernel/linker.ld %s" % (kernel_flags),
+CFLAGS = "%s -c" % (kernel_flags),
+CXXFLAGS = "%s -std=gnu++11 -c" % (kernel_flags),
+OBJCOPY = "x86_64-elf-objcopy"
+)
 
 # Enter the necessary subdirectories
 

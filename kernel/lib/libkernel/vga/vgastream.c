@@ -144,7 +144,7 @@ void vga_stream_init(stream* strm)
 	vga_buffer_clear((vga_stream*)strm, 0x0F00);
 }
 
-void vga_stream_write_byte(stream* strm, byte value)
+void vga_stream_write_character(stream* strm, byte value)
 {
 	vga_stream* vga_strm = (vga_stream*)strm;
 	char character = value % 0x100;
@@ -188,8 +188,14 @@ void vga_stream_write_byte(stream* strm, byte value)
 		vga_buffer_scroll(vga_strm, vga_strm->y - VGA_HEIGHT + 1);
 		vga_strm->y = VGA_HEIGHT - 1;
 	}
+}
+
+void vga_stream_write_byte(stream* strm, byte value)
+{
+	vga_stream_write_character(strm, value);
 	
-	vga_buffer_to_vga(vga_strm);
+	// Buffer the result to the VGA device
+	vga_buffer_to_vga((vga_stream*)strm);
 }
 
 void vga_stream_write(stream* strm, const byte* data, sysint size)
@@ -244,6 +250,9 @@ void vga_stream_write(stream* strm, const byte* data, sysint size)
 		}
 			
 		if (output)
-			vga_stream_write_byte(strm, data[i]);
+			vga_stream_write_character(strm, data[i]);
 	}
+	
+	// Buffer the result to the VGA device
+	vga_buffer_to_vga(vga_strm);
 }
