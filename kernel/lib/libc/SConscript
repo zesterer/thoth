@@ -6,7 +6,6 @@ Import(["project_info", "kernel_build_environment"])
 source_files = []
 
 source_files += Glob("*.c")
-source_files += Glob("*.cpp")
 
 # Compile the source files
 

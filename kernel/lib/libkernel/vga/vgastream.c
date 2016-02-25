@@ -33,15 +33,13 @@
 // libc
 #include "libc/stdlib.h"
 
-// TEMP - libthoth
-#include "libthoth/vga.h"
-
 // VGA stream variables
 static uint VGA_WIDTH = 80;
 static uint VGA_HEIGHT = 25;
 
 // Global default stream
 vga_stream vga_strm_default;
+bool vga_strm_default_exists = false;
 
 // Global functions
 void vga_default_stream_init()
@@ -51,6 +49,12 @@ void vga_default_stream_init()
 
 vga_stream* vga_get_default_stream()
 {
+	if (!vga_strm_default_exists)
+	{
+		vga_default_stream_init();
+		vga_strm_default_exists = true;
+	}
+	
 	return &vga_strm_default;
 }
 
@@ -64,6 +68,9 @@ vga_stream vga_stream_create()
 	
 	strm.x = 0;
 	strm.y = 0;
+	
+	strm.color_char = VGA_COLOR_WHITE;
+	strm.color_back = VGA_COLOR_BLACK;
 	
 	strm.init((stream*)&strm);
 	
@@ -118,7 +125,7 @@ void vga_stream_set_char(vga_stream* strm, uint x, uint y, uchar value)
 void vga_stream_set_back_color(vga_stream* strm, uint x, uint y, uint color)
 {
 	strm->buffer[y * VGA_WIDTH + x] &= 0x0FFF;
-	strm->buffer[y * VGA_WIDTH + x] |= (uint16)((color << 12) % 0x10);
+	strm->buffer[y * VGA_WIDTH + x] |= (uint16)((color % 0x10) << 12);
 }
 
 void vga_stream_set_char_color(vga_stream* strm, uint x, uint y, uint color)
@@ -165,8 +172,8 @@ void vga_stream_write_byte(stream* strm, byte value)
 	if (output)
 	{
 		vga_stream_set_char(vga_strm, vga_strm->x, vga_strm->y, character);
-		vga_stream_set_back_color(vga_strm, vga_strm->x, vga_strm->y, VGA_COLOR_BLACK);
-		vga_stream_set_char_color(vga_strm, vga_strm->x, vga_strm->y, VGA_COLOR_WHITE);
+		vga_stream_set_char_color(vga_strm, vga_strm->x, vga_strm->y, vga_strm->color_char);
+		vga_stream_set_back_color(vga_strm, vga_strm->x, vga_strm->y, vga_strm->color_back);
 		vga_strm->x ++;
 	}
 	
@@ -187,9 +194,54 @@ void vga_stream_write_byte(stream* strm, byte value)
 
 void vga_stream_write(stream* strm, const byte* data, sysint size)
 {
+	vga_stream* vga_strm = (vga_stream*)strm;
+	
 	for (uint i = 0; i < size; i ++)
 	{
 		bool output = true;
+		
+		switch (data[i])
+		{
+			case '\\': // Escape code
+				if (i >= size - 1) //Check we're not at the end of the string
+					break;
+				
+				switch (data[i + 1])
+				{
+					case 'C': // The character color escape code
+						if (i >= size - 2) // Check to make sure there's the color definition on the end
+							break;
+						
+						output = false;
+						
+						if (data[i + 2] >= '0' && data[i + 2] <= '9')
+							vga_strm->color_char = data[i + 2] - '0';
+						if (data[i + 2] >= 'A' && data[i + 2] <= 'F')
+							vga_strm->color_char = data[i + 2] - 'A' + 10;
+						
+						i += 2;
+						break;
+						
+					case 'B': // The character color escape code
+						if (i >= size - 2) // Check to make sure there's the color definition on the end
+							break;
+						
+						output = false;
+						
+						if (data[i + 2] >= '0' && data[i + 2] <= '9')
+							vga_strm->color_back = data[i + 2] - '0';
+						if (data[i + 2] >= 'A' && data[i + 2] <= 'F')
+							vga_strm->color_back = data[i + 2] - 'A' + 10;
+						
+						i += 2;
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
 			
 		if (output)
 			vga_stream_write_byte(strm, data[i]);

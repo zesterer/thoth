@@ -1,12 +1,9 @@
 #ifndef KERNEL_KERNEL_H
 #define KERNEL_KERNEL_H
 
-#include "libthoth/types.h"
+#include "libthoth/type.h"
 
-struct Kernel
-{	
-	static void init();
-	static void run();
-};
+void kernel_init();
+void kernel_run();
 
 #endif

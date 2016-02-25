@@ -54,13 +54,15 @@ void vga_stream_set_value(vga_stream* strm, uint x, uint y, uint16 value);
 
 // VGA stream implementation
 struct vga_stream
-{
-	uint x, y;
-	uint16 buffer[80 * 25];
-	
+{	
 	fptr_stream_init init;
 	fptr_stream_write_byte write_byte;
 	fptr_stream_write write;
+	
+	// Put other data AFTERWARDS (so that if code treats it as an ordinary stream it still runs the functions)
+	uint x, y;
+	uint16 buffer[80 * 25];
+	byte color_char, color_back;
 };
 
 #endif

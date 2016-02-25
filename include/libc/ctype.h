@@ -19,41 +19,18 @@
 */
 
 /*
-* Name:         stdio.h
+* Name:         ctype.h
 * 
-* Description:  C standard library input / output functions
+* Description:  C standard library to classify & manipulate characters
 * 
 * Notes:        NONE
 */
 
-#ifndef LIBC_STDIO_H
-#define LIBC_STDIO_H
+#ifndef LIBC_CTYPE_H
+#define LIBC_CTYPE_H
 
-//Macros
-#define EOF -1
-
-//Operations on files
-//TODO
-
-//File access
-//TODO
-
-//Formatted input/output
-int printf(const char* format, ...);
-//TODO - complete this
-
-//Character input/output
-int putchar(int character);
-int puts(const char* str);
-//TODO - complete this
-
-//Direct input/output
-//TODO
-
-//File positioning
-//TODO
-
-//Error-handling
-//TODO
+// Character conversion functions
+int toupper(int c);
+int tolower(int c);
 
 #endif

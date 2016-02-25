@@ -52,6 +52,7 @@ kernel_objects += Glob("lib/libthoth/*.o")
 kernel_objects += Glob("lib/libthoth/core/*.o")
 kernel_objects += Glob("lib/libthoth/io/*.o")
 kernel_objects += Glob("lib/libthoth/vga/*.o")
+kernel_objects += Glob("lib/libthoth/dmm/*.o")
 
 # Boot-related code
 

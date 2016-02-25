@@ -45,9 +45,9 @@ bool _assert(const char* assert_str, bool assert_val)
 bool _assert_test(const char* assert_str, bool assert_val, const char* message)
 {
 	if (assert_val)
-		printf("%C2SUCCESS%CF: ");
+		printf("\\C2SUCCESS\\CF: ");
 	else
-		printf("%C4FAILURE%CF: ");
+		printf("\\C4FAILURE\\CF: ");
 	
 	printf(message);
 	putchar('\n');

@@ -5,7 +5,7 @@ Import(["project_info", "kernel_build_environment"])
 
 source_files = []
 
-source_files += Glob("*.cpp")
+source_files += Glob("*.c")
 
 # Link the kernel
 

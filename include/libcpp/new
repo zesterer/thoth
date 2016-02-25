@@ -1,7 +1,10 @@
 #ifndef LIBCPP_NEW
 #define LIBCPP_NEW
 
-#include "libc/stdio.h"
+extern "C"
+{
+	#include "libthoth/type.h"
+}
 
 // New operators
 void* operator new(size_t size);

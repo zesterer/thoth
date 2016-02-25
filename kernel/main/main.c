@@ -8,8 +8,8 @@
 
 #include "kernel.h"
 
-extern "C" //Use C to link kernelStart
-void kernelStart()
+extern "C"
+void kernel_start()
 {
-	Kernel::init();
+	kernel_init();
 }

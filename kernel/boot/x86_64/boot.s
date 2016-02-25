@@ -101,7 +101,7 @@ _start64:
 	// assembly file, so we'll create a kernel.c file in a moment. In that file,
 	// we'll create a C entry point called kernelMain and call it here.
 	
-	call kernelStart			// Enter the kernelStart function (C)
+	call kernel_start			// Enter the kernel_start function (C)
 	
 	// In case the function returns, we'll want to put the computer into an
 	// infinite loop. To do that, we use the clear interrupt ('cli') instruction
