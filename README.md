@@ -8,7 +8,7 @@ A screenshot of Thoth running on the QEMU virtual machine
 
 ## About Thoth
 
-Thoth is a hobby OS I decided to begin work on as a break from other projects. The kernel is written in a mixture of C++ and AT&T assembly.
+Thoth is a hobby OS I decided to begin work on as a break from other projects. The kernel is written in a mixture of C and AT&T assembly.
 
 Included with the operating system is a compatible C standard library (hopefully future releases will see this library mature into a user-space library too).
 
