@@ -40,7 +40,16 @@ idt* idt_setup_default()
 	if (idt_default == NULL)
 		idt_default = (idt*)malloc(sizeof(idt));
 	
+	idt_set_current(idt_default);
+	
 	return idt_default;
+}
+
+void idt_set_current(idt* table)
+{
+	struct idtr { uint16 size; addr base; } __attribute__((packed));
+	idtr current_idtr = {sizeof(idt) / 16, (void*)table};
+	asm ("lidt %0" : : "m"(current_idtr));
 }
 
 idt* idt_get_default()
@@ -48,7 +57,13 @@ idt* idt_get_default()
 	return idt_default;
 }
 
-void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high)
+void idt_set_entry(idt* table, uint8 irq, addr offset, uint16 selector, uint8 type_attributes)
 {
-	
+	table->entries[irq].offset_low =  ((uint64)offset & 0x000000000000FFFF) >> 0;
+	table->entries[irq].selector = selector;
+	table->entries[irq].zero0 = 0;
+	table->entries[irq].type_attributes = type_attributes;
+	table->entries[irq].offset_mid =  ((uint64)offset & 0x00000000FFFF0000) >> 16;
+	table->entries[irq].offset_high = ((uint64)offset & 0xFFFFFFFF00000000) >> 32;
+	table->entries[irq].zero1 = 0;
 }

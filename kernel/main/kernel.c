@@ -37,6 +37,7 @@
 #include "libkernel/vga/vga.h"
 #include "libkernel/vga/vgastream.h"
 #include "libkernel/interrupt/idt.h"
+#include "libkernel/interrupt/interrupt.h"
 
 // libc
 #include "libc/stdlib.h"
@@ -65,7 +66,14 @@ void kernel_init()
 	assert_test(enabled_dmm, "Set up kernel-space DMM");
 	
 	bool idt_setup = idt_setup_default() != NULL;
+	for (int i = 0; i < 256; i ++)
+		idt_set_entry(idt_get_default(), i, (addr)kernel_interrupt, 0, 0);
 	assert_test(idt_setup, "Set up Interrupt Descriptor Table");
+	
+	printf("Size: %i\n", sizeof(idt));
+	
+	interrupt_set_enabled(true);
+	assert_test(true, "Enabled interrupts");
 	
 	kernel_run();
 }
@@ -84,4 +92,14 @@ void kernel_run()
 	printf("\\CF\n");
 	
 	printf("%c Hello! I'm %d testing %s printf %x %X output %i .", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
+	
+	// Avoid halting
+	while (true) {}
+}
+
+void kernel_interrupt()
+{
+	printf("Interrupt!\n");
+	asm volatile ("jmp _hang_cpu");
+	asm volatile ("iretq");
 }

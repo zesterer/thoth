@@ -40,11 +40,11 @@ struct idt_entry
 {
 	uint16 offset_low;
 	uint16 selector;
-	uint8 zero1;
+	uint8 zero0;
 	uint8 type_attributes;
 	uint16 offset_mid;
 	uint32 offset_high;
-	uint32 zero2;
+	uint32 zero1;
 } __attribute__((packed));
 
 struct idt
@@ -54,7 +54,8 @@ struct idt
 
 // Function definitions
 idt* idt_setup_default();
+void idt_set_current(idt* table);
 idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high);
+void idt_set_entry(idt* table, uint8 irq, addr offset, uint16 selector, uint8 type_attributes);
 
 #endif

@@ -33,5 +33,6 @@
 
 void kernel_init();
 void kernel_run();
+void kernel_interrupt();
 
 #endif

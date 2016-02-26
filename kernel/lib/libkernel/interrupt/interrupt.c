@@ -28,13 +28,10 @@
 
 void interrupt_set_enabled(bool enabled)
 {
-	/*asm volatile("push %rax\n"
-	             "pushf\n"
-	             "pop %rax\n"
-	             "or %0, %rax\n" : : "a"(1 << 9)
-	             "push %rax\n"
-	             "popf\n"
-	             "pop %rax");*/
+	if (enabled)
+		asm volatile ("sti");
+	else
+		asm volatile ("cli");
 }
 
 bool interrupt_get_enabled()
