@@ -47,10 +47,10 @@ void vga_stream_write_byte(stream* strm, byte value);
 void vga_stream_write(stream* strm, const byte* data, sysint size);
 
 // VGA stream functions
-void vga_stream_set_char      (vga_stream* strm, uint x, uint y, uchar  value);
-void vga_stream_set_char_color(vga_stream* strm, uint x, uint y, uint   color);
-void vga_stream_set_back_color(vga_stream* strm, uint x, uint y, uint   color);
-void vga_stream_set_value(vga_stream* strm, uint x, uint y, uint16 value);
+void vga_stream_set_char      (vga_stream* strm, int x, int y, uchar  value);
+void vga_stream_set_char_color(vga_stream* strm, int x, int y, uint   color);
+void vga_stream_set_back_color(vga_stream* strm, int x, int y, uint   color);
+void vga_stream_set_value(vga_stream* strm, int x, int y, uint16 value);
 
 // VGA stream implementation
 struct vga_stream
@@ -60,7 +60,7 @@ struct vga_stream
 	fptr_stream_write write;
 	
 	// Put other data AFTERWARDS (so that if code treats it as an ordinary stream it still runs the functions)
-	uint x, y;
+	int x, y;
 	uint16 buffer[80 * 25];
 	byte color_char, color_back;
 };

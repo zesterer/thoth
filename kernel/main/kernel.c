@@ -36,6 +36,7 @@
 // libkernel
 #include "libkernel/vga/vga.h"
 #include "libkernel/vga/vgastream.h"
+#include "libkernel/interrupt/idt.h"
 
 // libc
 #include "libc/stdlib.h"
@@ -53,15 +54,18 @@ extern void* _end_of_kernel asm("_end_of_kernel");
 void kernel_init()
 {
 	assert_test(true, "Set up temporary stack");
-	assert_test(true, "Init GDT and paging tables");
+	assert_test(true, "Set up Global Descriptor Table");
+	assert_test(true, "Set up page tables");
 	assert_test(true, "Switch to 64-bit long mode");
 	assert_test(true, "Init stable environment");
 	assert_test(true, "Jump to kernel entry location");
 	assert_test(true, "Init text-mode VGA buffer");
-	//assert_test(thoth::getInterruptsEnabled(), "Test interrupts enabled");
 	
 	bool enabled_dmm = dmm_set(&_end_of_kernel, 0x4000000) == 0;
 	assert_test(enabled_dmm, "Set up kernel-space DMM");
+	
+	bool idt_setup = idt_setup_default() != NULL;
+	assert_test(idt_setup, "Set up Interrupt Descriptor Table");
 	
 	kernel_run();
 }
@@ -79,5 +83,5 @@ void kernel_run()
 	printf(version);
 	printf("\\CF\n");
 	
-	printf("%c Hello! I'm %d testing %s printf %x %X output %u .\n", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
+	printf("%c Hello! I'm %d testing %s printf %x %X output %i .", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
 }

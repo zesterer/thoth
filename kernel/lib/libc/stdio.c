@@ -117,9 +117,9 @@ int printf(const char* format, ...)
 								str[i] = tolower(str[i]);
 						}
 						
-						strm->write(strm, (byte*)str, strlen(str)); // Write the inserted string
+						strm->write(strm, (byte*)str, strlen(str)); // Write the inserted integer
 						len += strlen(str);
-						last = i + 2; // The string format sequence was 2 characters long
+						last = i + 2; // The integer format sequence was 2 characters long
 						break;
 					}
 					case 'c':
@@ -128,9 +128,9 @@ int printf(const char* format, ...)
 						
 						// Write the character we found in the gap
 						char character = (char)va_arg(args, int);
-						strm->write_byte(strm, (byte)character); // Write the inserted string
+						strm->write_byte(strm, (byte)character); // Write the inserted character
 						len ++;
-						last = i + 2; // The string format sequence was 2 characters long
+						last = i + 2; // The character format sequence was 2 characters long
 						break;
 					}
 					default:

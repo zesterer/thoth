@@ -19,42 +19,36 @@
 */
 
 /*
-* Name:         idt.h
+* Name:         idt.c
 * 
 * Description:  Interrupt Descriptor Table functions
 * 
 * Notes:        NONE
 */
 
-#ifndef LIBKERNEL_INTERRUPT_IDT_H
-#define LIBKERNEL_INTERRUPT_IDT_H
+// Local
+#include "libkernel/interrupt/idt.h"
 
-// libthoth
-#include "libthoth/type.h"
+// libc
+#include "libc/stdlib.h"
 
-// Struct definitions
-struct idt;
-struct idt_entry;
+// The default IDT
+idt* idt_default = NULL;
 
-struct idt_entry
+idt* idt_setup_default()
 {
-	uint16 offset_low;
-	uint16 selector;
-	uint8 zero1;
-	uint8 type_attributes;
-	uint16 offset_mid;
-	uint32 offset_high;
-	uint32 zero2;
-} __attribute__((packed));
+	if (idt_default == NULL)
+		idt_default = (idt*)malloc(sizeof(idt));
+	
+	return idt_default;
+}
 
-struct idt
+idt* idt_get_default()
 {
-	idt_entry entries[256];
-} __attribute__((packed));
+	return idt_default;
+}
 
-// Function definitions
-idt* idt_setup_default();
-idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high);
-
-#endif
+void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high)
+{
+	
+}

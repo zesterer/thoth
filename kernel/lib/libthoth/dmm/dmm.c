@@ -62,7 +62,7 @@ int dmm_set(addr base, sysint size)
 	}
 	else
 	{
-		//printf("%C4Error%CF: %C4Attempted to define space for a DMM, but there is not enough to contain a single block%CF");
+		printf("\\C4Error\\CF: \\C4Attempted to define space for a DMM, but there is not enough to contain a single block\\CF");
 		return 1;
 	}
 }
@@ -80,10 +80,16 @@ sysint dmm_create_map()
 addr dmm_allocate_block(sysint size)
 {
 	if (!dmm_is_valid)
-		printf("%C4Error%CF: %C4Tried to allocate DMM memory block, but the dmm has not been created yet%CF");
+	{
+		printf("\\C4Error\\CF: \\C4Tried to allocate DMM memory block, but DMM has not been created yet or DMM is invalid\\CF\n");
+		return NULL;
+	}
 	
 	if (size <= 0)
-		printf("%C4Error%CF: %C4Tried to allocate DMM memory block, but size was zero%CF");
+	{
+		printf("\\C4Error\\CF: \\C4Tried to allocate DMM memory block, but size was zero\\CF\n");
+		return NULL;
+	}
 	
 	sysint blocks_needed = ((size - 1) / block_size) + 1;
 	
@@ -129,7 +135,7 @@ addr dmm_allocate_block(sysint size)
 	}
 	
 	//Couldn't find enough space
-	printf("%C4Error%CF: %C4Attempted to allocate block on DMM, but there is not enough free space%CF");
+	printf("\\C4Error\\CF: \\C4Attempted to allocate block on DMM, but there is not enough free space\\CF\n");
 	return NULL;
 }
 
@@ -137,19 +143,19 @@ int dmm_free_block(addr pointer)
 {
 	if (!dmm_is_valid)
 	{
-		printf("%C4Error%CF: %C4Tried to free DMM memory block, but the dmm has not been created yet%CF");
+		printf("\\C4Error\\CF: \\C4Tried to free DMM memory block, but DMM has not been created yet or DMM is invalid\\CF\n");
 		return 1;
 	}
 	
 	if (pointer < dmm_start || (sysint)pointer > ((sysint)dmm_start + dmm_size * block_size))
 	{
-		printf("%C4Error%CF: %C4Pointer to free is not within DMM bounds%CF");
+		printf("\\C4Error\\CF: \\C4Pointer to free is not within DMM bounds\\CF\n");
 		return 2;
 	}
 	
 	if (((sysint)pointer - (sysint)dmm_start) % block_size != 0)
 	{
-		printf("%C4Error%CF: %C4Pointer to free was not aligned to DMM blocks%CF");
+		printf("\\C4Error\\CF: \\C4Pointer to free was not aligned to DMM blocks\\CF\n");
 		return 3;
 	}
 	
@@ -166,17 +172,17 @@ int dmm_free_block(addr pointer)
 	}
 	else if (dmm_map[map_location] == MAP_TAIL)
 	{
-		printf("%C4Error%CF: %C4Pointer to free is not a heading block%CF");
+		printf("\\C4Error\\CF: \\C4Pointer to free is not a heading block\\CF\n");
 		return 4;
 	}
 	else if (dmm_map[map_location] == MAP_EMPTY)
 	{
-		printf("%C4Error%CF: %C4Pointer to free is already free%CF");
+		printf("\\C4Error\\CF: \\C4Pointer to free is already free\\CF\n");
 		return 5;
 	}
 	else
 	{
-		printf("%C4Error%CF: %C4dmm corruption, invalid map entry detected in DMM%CF");
+		printf("\\C4Error\\CF: \\C4DMM corruption, invalid map entry detected in DMM\\CF\n");
 		dmm_is_valid = false; //Something went seriously wrong, so tell it to just stop
 		return 4;
 	}
@@ -186,6 +192,12 @@ int dmm_free_block(addr pointer)
 
 void dmm_print_map(sysint start, sysint end)
 {
+	if (!dmm_is_valid)
+	{
+		printf("\\C4Error\\CF: \\C4Tried to print DMM map, but DMM has not been created yet or DMM is invalid\\CF\n");
+		return;
+	}
+	
 	for (sysint i = start; i < end && i < dmm_size; i ++)
 	{
 		if (dmm_map[i] == MAP_FILLED)

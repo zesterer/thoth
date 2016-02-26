@@ -19,42 +19,17 @@
 */
 
 /*
-* Name:         idt.h
+* Name:         interrupt.h
 * 
-* Description:  Interrupt Descriptor Table functions
+* Description:  Interrupt functions
 * 
 * Notes:        NONE
 */
 
-#ifndef LIBKERNEL_INTERRUPT_IDT_H
-#define LIBKERNEL_INTERRUPT_IDT_H
+#ifndef LIBKERNEL_INTERRUPT_INTERRUPT_H
+#define LIBKERNEL_INTERRUPT_INTERRUPT_H
 
-// libthoth
-#include "libthoth/type.h"
-
-// Struct definitions
-struct idt;
-struct idt_entry;
-
-struct idt_entry
-{
-	uint16 offset_low;
-	uint16 selector;
-	uint8 zero1;
-	uint8 type_attributes;
-	uint16 offset_mid;
-	uint32 offset_high;
-	uint32 zero2;
-} __attribute__((packed));
-
-struct idt
-{
-	idt_entry entries[256];
-} __attribute__((packed));
-
-// Function definitions
-idt* idt_setup_default();
-idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high);
+void interrupt_set_enabled(bool enabled);
+bool interrupt_get_enabled();
 
 #endif

@@ -19,37 +19,37 @@
 */
 
 /*
-* Name:         out.h
+* Name:         port.h
 * 
-* Description:  Functions to output to I/O ports
+* Description:  Functions to read/write to I/O ports
 * 
 * Notes:        NONE
 */
 
-#ifndef LIBKERNEL_SYS_OUT_H
-#define LIBKERNEL_SYS_OUT_H
+#ifndef LIBKERNEL_IO_PORT_H
+#define LIBKERNEL_IO_PORT_H
 
-// Local
+// Libthoth
 #include "libthoth/type.h"
 
-// Output functions
-static inline void outb(uint16 port, uint8 value)
+static inline void outb(uint16 port, uint8  value)
 {
-	asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));
-	/* There's an outb %al, $imm8  encoding, for compile-time constant port numbers that fit in 8b.  (N constraint).
-	* Wider immediate constants would be truncated at assemble-time (e.g. "i" constraint).
-	* The  outb  %al, %dx  encoding is the only option for all other cases.
-	* %1 expands to %dx because  port  is a uint16_t.  %w1 could be used if we had the port number a wider C type */
+	asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
 static inline void outw(uint16 port, uint16 value)
 {
-	asm volatile("outw %0, %1" : : "a"(value), "Nd"(port));
+	asm volatile ("outw %0, %1" : : "a"(value), "Nd"(port));
 }
 
 static inline void outl(uint16 port, uint32 value)
 {
-	asm volatile("outl %0, %1" : : "a"(value), "Nd"(port));
+	asm volatile ("outl %0, %1" : : "a"(value), "Nd"(port));
+}
+
+static inline void outq(uint16 port, uint64 value)
+{
+	asm volatile ("outq %0, %1" : : "a"(value), "Nd"(port));
 }
 
 #endif

@@ -7,6 +7,7 @@ source_files = []
 
 source_files += Glob("*.c")
 source_files += Glob("vga/*.c")
+source_files += Glob("interrupt/*.c")
 
 # Compile the source files
 

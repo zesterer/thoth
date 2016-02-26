@@ -34,8 +34,8 @@
 #include "libc/stdlib.h"
 
 // VGA stream variables
-static uint VGA_WIDTH = 80;
-static uint VGA_HEIGHT = 25;
+static int VGA_WIDTH = 80;
+static int VGA_HEIGHT = 25;
 
 // Global default stream
 vga_stream vga_strm_default;
@@ -79,9 +79,9 @@ vga_stream vga_stream_create()
 
 void vga_buffer_clear(vga_stream* strm, uint16 value)
 {
-	for (uint i = 0; i < VGA_WIDTH; i ++)
+	for (int i = 0; i < VGA_WIDTH; i ++)
 	{
-		for (uint j = 0; j < VGA_HEIGHT; j ++)
+		for (int j = 0; j < VGA_HEIGHT; j ++)
 		{
 			strm->buffer[j * VGA_WIDTH + i] = value;
 		}
@@ -90,9 +90,9 @@ void vga_buffer_clear(vga_stream* strm, uint16 value)
 
 void vga_buffer_to_vga(vga_stream* strm)
 {
-	for (uint i = 0; i < VGA_WIDTH; i ++)
+	for (int i = 0; i < VGA_WIDTH; i ++)
 	{
-		for (uint j = 0; j < VGA_HEIGHT; j ++)
+		for (int j = 0; j < VGA_HEIGHT; j ++)
 		{
 			vga_set_value(i, j, strm->buffer[j * VGA_WIDTH + i]);
 		}
@@ -105,9 +105,9 @@ void vga_buffer_scroll(vga_stream* strm, int amount)
 {
 	if (amount > 0)
 	{
-		for (uint row = amount; row < VGA_HEIGHT; row ++)
+		for (int row = amount; row < VGA_HEIGHT; row ++)
 		{
-			for (uint col = 0; col < VGA_WIDTH; col ++)
+			for (int col = 0; col < VGA_WIDTH; col ++)
 			{
 				strm->buffer[(row - amount) * VGA_WIDTH + col] = strm->buffer[row * VGA_WIDTH + col];
 				strm->buffer[row * VGA_WIDTH + col] = 0;
@@ -116,25 +116,25 @@ void vga_buffer_scroll(vga_stream* strm, int amount)
 	}
 }
 
-void vga_stream_set_char(vga_stream* strm, uint x, uint y, uchar value)
+void vga_stream_set_char(vga_stream* strm, int x, int y, uchar value)
 {
 	strm->buffer[y * VGA_WIDTH + x] &= 0xFF00;
 	strm->buffer[y * VGA_WIDTH + x] |= (uint16)(value % 0x100);
 }
 
-void vga_stream_set_back_color(vga_stream* strm, uint x, uint y, uint color)
+void vga_stream_set_back_color(vga_stream* strm, int x, int y, uint color)
 {
 	strm->buffer[y * VGA_WIDTH + x] &= 0x0FFF;
 	strm->buffer[y * VGA_WIDTH + x] |= (uint16)((color % 0x10) << 12);
 }
 
-void vga_stream_set_char_color(vga_stream* strm, uint x, uint y, uint color)
+void vga_stream_set_char_color(vga_stream* strm, int x, int y, uint color)
 {
 	strm->buffer[y * VGA_WIDTH + x] &= 0xF0FF;
 	strm->buffer[y * VGA_WIDTH + x] |= ((color % 0x10) << 8);
 }
 
-void vga_stream_set_value(vga_stream* strm, uint x, uint y, uint16 value)
+void vga_stream_set_value(vga_stream* strm, int x, int y, uint16 value)
 {
 	strm->buffer[y * VGA_WIDTH + x] = value;
 }
@@ -162,6 +162,19 @@ void vga_stream_write_character(stream* strm, byte value)
 			vga_strm->x ++;
 			while (vga_strm->x % 4 != 0)
 				vga_strm->x ++;
+			output = false;
+			break;
+		
+		case '\b':
+			vga_strm->x --;
+			if (vga_strm->x < 0 && vga_strm->y > 0)
+			{
+				vga_strm->y --;
+				vga_strm->x = VGA_WIDTH - 1;
+			}
+			vga_stream_set_char(vga_strm, vga_strm->x, vga_strm->y, 0x0);
+			vga_stream_set_char_color(vga_strm, vga_strm->x, vga_strm->y, vga_strm->color_char);
+			vga_stream_set_back_color(vga_strm, vga_strm->x, vga_strm->y, vga_strm->color_back);
 			output = false;
 			break;
 		

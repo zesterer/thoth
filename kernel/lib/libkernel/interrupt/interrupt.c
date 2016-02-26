@@ -19,42 +19,29 @@
 */
 
 /*
-* Name:         idt.h
+* Name:         interrupt.c
 * 
-* Description:  Interrupt Descriptor Table functions
+* Description:  Interrupt functions
 * 
 * Notes:        NONE
 */
 
-#ifndef LIBKERNEL_INTERRUPT_IDT_H
-#define LIBKERNEL_INTERRUPT_IDT_H
-
-// libthoth
-#include "libthoth/type.h"
-
-// Struct definitions
-struct idt;
-struct idt_entry;
-
-struct idt_entry
+void interrupt_set_enabled(bool enabled)
 {
-	uint16 offset_low;
-	uint16 selector;
-	uint8 zero1;
-	uint8 type_attributes;
-	uint16 offset_mid;
-	uint32 offset_high;
-	uint32 zero2;
-} __attribute__((packed));
+	/*asm volatile("push %rax\n"
+	             "pushf\n"
+	             "pop %rax\n"
+	             "or %0, %rax\n" : : "a"(1 << 9)
+	             "push %rax\n"
+	             "popf\n"
+	             "pop %rax");*/
+}
 
-struct idt
+bool interrupt_get_enabled()
 {
-	idt_entry entries[256];
-} __attribute__((packed));
-
-// Function definitions
-idt* idt_setup_default();
-idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, uint16 offset_low, uint16 selector, uint8 type_attributes, uint16 offset_mid, uint32 offset_high);
-
-#endif
+	unsigned long flags;
+	asm volatile ( "pushf\n\t"
+	               "pop %0"
+	             : "=g"(flags) );
+	return flags & (1 << 9);
+}

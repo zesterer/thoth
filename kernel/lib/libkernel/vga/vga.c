@@ -28,7 +28,7 @@
 
 // Local
 #include "libkernel/vga/vga.h"
-#include "libkernel/sys/out.h"
+#include "libkernel/io/port.h"
 
 // Locally used variables
 static uint VGA_WIDTH = 80;
