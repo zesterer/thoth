@@ -29,6 +29,9 @@
 #ifndef LIBKERNEL_INTERRUPT_IDT_H
 #define LIBKERNEL_INTERRUPT_IDT_H
 
+// Local
+#include "libkernel/interrupt/interrupt.h"
+
 // libthoth
 #include "libthoth/type.h"
 
@@ -40,11 +43,10 @@ struct idt_entry
 {
 	uint16 offset_low;
 	uint16 selector;
-	uint8 zero0;
-	uint8 type_attributes;
+	uint16 type_attributes;
 	uint16 offset_mid;
 	uint32 offset_high;
-	uint32 zero1;
+	uint32 zero;
 } __attribute__((packed));
 
 struct idt
@@ -56,6 +58,6 @@ struct idt
 idt* idt_setup_default();
 void idt_set_current(idt* table);
 idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, addr offset, uint16 selector, uint8 type_attributes);
+void idt_set_entry(idt* table, uint8 irq, interrupt_handler handler, uint16 selector, uint16 type_attributes);
 
 #endif

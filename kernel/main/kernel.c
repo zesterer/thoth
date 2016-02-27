@@ -38,6 +38,7 @@
 #include "libkernel/vga/vgastream.h"
 #include "libkernel/interrupt/idt.h"
 #include "libkernel/interrupt/interrupt.h"
+#include "libkernel/io/port.h"
 
 // libc
 #include "libc/stdlib.h"
@@ -51,6 +52,10 @@
 
 //A pointer to the end of the kernel
 extern void* _end_of_kernel asm("_end_of_kernel");
+
+//Declare the default kernel interrupt handler
+void kernel_interrupt(int irq);
+int a = 0;
 
 void kernel_init()
 {
@@ -67,8 +72,9 @@ void kernel_init()
 	
 	bool idt_setup = idt_setup_default() != NULL;
 	for (int i = 0; i < 256; i ++)
-		idt_set_entry(idt_get_default(), i, (addr)kernel_interrupt, 0, 0);
+		idt_set_entry(idt_get_default(), i, (void(*)(int))kernel_interrupt, 8, 0x8E00);
 	assert_test(idt_setup, "Set up Interrupt Descriptor Table");
+	idt_set_current(idt_get_default());
 	
 	printf("Size: %i\n", sizeof(idt));
 	
@@ -97,9 +103,10 @@ void kernel_run()
 	while (true) {}
 }
 
-void kernel_interrupt()
+void kernel_interrupt(int irq)
 {
-	printf("Interrupt!\n");
-	asm volatile ("jmp _hang_cpu");
+	a ++;
+	printf("Interrupt! Type = %u, a = %u\n", irq, a);
+	interrupt_handle();
 	asm volatile ("iretq");
 }

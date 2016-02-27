@@ -26,10 +26,17 @@
 * Notes:        NONE
 */
 
+// Local
+#include "libkernel/io/port.h"
+
 void interrupt_set_enabled(bool enabled)
 {
 	if (enabled)
+	{
+		outb(0x21,0xfd);
+		outb(0xa1,0xff);
 		asm volatile ("sti");
+	}
 	else
 		asm volatile ("cli");
 }

@@ -66,18 +66,18 @@ _tmp_gdt:
 _tmp_gdt_null:
 	.long 0
 	.long 0
-_tmp_gdt_code0:
+_tmp_gdt_code0: // For kernel-space code
 	.word 0			// Limit [ 0:15]
 	.word 0			// Base  [ 0:15]
 	.byte 0			// Base  [16:23]
-	.byte 0x98		// Present, DPL=0, Execute/Read, non-conforming
+	.byte 0x98		// Present, Descriptor Privilege Level = 0, Execute/Read, non-conforming
 	.byte 0xA0		// Granularity, 32-bit, limit [16:19]
 	.byte 0			// Base  [24:31]
-_tmp_gdt_data0:
+_tmp_gdt_data0: // For kernel-space data
 	.word 0			// Limit [ 0:15]
 	.word 0			// Base  [ 0:15]
 	.byte 0			// Base  [16:23]
-	.byte 0x92		// Present, DPL=0, Read/Write
+	.byte 0x92		// Present, Descriptor Privilege Level = 0, Read/Write
 	.byte 0xCF		// limit [16:19] and attr
 	.byte 0			// Base  [24:31]
 _tmp_gdt_end:

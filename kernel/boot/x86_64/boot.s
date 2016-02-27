@@ -71,17 +71,22 @@ _bootstrap:
 	pushl 0
 	popl %eax
 
-	//Display 'THOTH' on the screen to show that we've actually booted
+	//Display 'Booting' on the screen to show that we're actually booting
 	mov $(0xB8000 + 0x0), %eax
-	movb $84, (%eax)
+	movb $66, (%eax)
 	mov $(0xB8000 + 0x2), %eax
-	movb $72, (%eax)
+	movb $111, (%eax)
 	mov $(0xB8000 + 0x4), %eax
-	movb $79, (%eax)
+	movb $111, (%eax)
 	mov $(0xB8000 + 0x6), %eax
-	movb $84, (%eax)
+	movb $116, (%eax)
 	mov $(0xB8000 + 0x8), %eax
-	movb $72, (%eax)
+	movb $105, (%eax)
+	mov $(0xB8000 + 0xA), %eax
+	movb $110, (%eax)
+	mov $(0xB8000 + 0xC), %eax
+	movb $103, (%eax)
+	//jmp _hang_cpu
 	
 	// Set up long (64-bit) mode
 	jmp _enter_long_mode

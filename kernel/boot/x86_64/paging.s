@@ -80,12 +80,12 @@ _construct_page_tables:		// A label so we can access this procedure from elsewhe
 	/* CLEAR PAGING TABLES */
 	
 	mov $(_page_map_level_4_top), %edi	// Put the PML4 pointer temporarily into a general-purpose register
-	mov %edi, %cr3					// Tell CR3 where the page tables are located
-	xor %eax, %eax					// Zero the accumulator just in case it wasn't already zero
-	mov $0x6000, %ecx				// Move 0x6000 (24KB) into the counter register
-	rep								// Repeatedly copy the value in the accumulator (0) into memory, as per the number of times in the counter (6KB)
-	//stosd							// Copy EAX to EDI (Why? Not sure)
-	mov %cr3, %edi					// Copy CR3 into EDI
+	mov %edi, %cr3						// Tell CR3 where the page tables are located
+	xor %eax, %eax						// Zero the accumulator just in case it wasn't already zero
+	mov $0x6000, %ecx					// Move 0x6000 (24KB) into the counter register
+	rep									// Repeatedly copy the value in the accumulator (0) into memory, as per the number of times in the counter (6KB)
+	//stosd								// Copy EAX to EDI (Why? Not sure)
+	mov %cr3, %edi						// Copy CR3 into EDI
 	
 	/* FILL PML4 */
 	
