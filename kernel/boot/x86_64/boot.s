@@ -86,7 +86,6 @@ _bootstrap:
 	movb $110, (%eax)
 	mov $(0xB8000 + 0xC), %eax
 	movb $103, (%eax)
-	//jmp _hang_cpu
 	
 	// Set up long (64-bit) mode
 	jmp _enter_long_mode
@@ -147,6 +146,38 @@ _start64:
 	hlt							// Halt the CPU
 	
 	jmp _hang_cpu					//Just in case
+
+// A kernel panic code
+.global _kernel_panic
+_kernel_panic:
+	mov $(0xB8000 + 0x00), %eax
+	movw $('K' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x02), %eax
+	movw $('e' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x04), %eax
+	movw $('r' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x06), %eax
+	movw $('n' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x08), %eax
+	movw $('e' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x0A), %eax
+	movw $('l' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x0C), %eax
+	movw $(' ' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x0E), %eax
+	movw $('P' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x10), %eax
+	movw $('a' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x12), %eax
+	movw $('n' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x14), %eax
+	movw $('i' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x16), %eax
+	movw $('c' | (4 << 12) | (15 << 8)), (%eax)
+	mov $(0xB8000 + 0x18), %eax
+	movw $('!' | (4 << 12) | (15 << 8)), (%eax)
+	
+	jmp _hang_cpu
 
 .section .end_of_kernel
 .global _end_of_kernel

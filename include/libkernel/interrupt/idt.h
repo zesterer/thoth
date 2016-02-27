@@ -58,6 +58,6 @@ struct idt
 idt* idt_setup_default();
 void idt_set_current(idt* table);
 idt* idt_get_default();
-void idt_set_entry(idt* table, uint8 irq, interrupt_handler handler, uint16 selector, uint16 type_attributes);
+void idt_set_entry(idt* table, uint8 irq, addr handler, uint16 selector, uint16 type_attributes);
 
 #endif

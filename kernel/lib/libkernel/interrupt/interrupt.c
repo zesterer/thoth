@@ -28,13 +28,16 @@
 
 // Local
 #include "libkernel/io/port.h"
+#include "libkernel/interrupt/idt.h"
+
+extern uint64 interrupt_handler_address;
 
 void interrupt_set_enabled(bool enabled)
 {
 	if (enabled)
 	{
-		outb(0x21,0xfd);
-		outb(0xa1,0xff);
+		outb(0x21,0xFD);
+		outb(0xA1,0xFF);
 		asm volatile ("sti");
 	}
 	else
@@ -48,4 +51,9 @@ bool interrupt_get_enabled()
 	               "pop %0"
 	             : "=g"(flags) );
 	return flags & (1 << 9);
+}
+
+void interrupt_set_handler(void* handler)
+{
+	interrupt_handler_address = (uint64)handler;
 }

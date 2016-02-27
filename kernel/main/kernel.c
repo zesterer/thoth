@@ -53,10 +53,6 @@
 //A pointer to the end of the kernel
 extern void* _end_of_kernel asm("_end_of_kernel");
 
-//Declare the default kernel interrupt handler
-void kernel_interrupt(int irq);
-int a = 0;
-
 void kernel_init()
 {
 	assert_test(true, "Set up temporary stack");
@@ -71,12 +67,12 @@ void kernel_init()
 	assert_test(enabled_dmm, "Set up kernel-space DMM");
 	
 	bool idt_setup = idt_setup_default() != NULL;
-	for (int i = 0; i < 256; i ++)
-		idt_set_entry(idt_get_default(), i, (void(*)(int))kernel_interrupt, 8, 0x8E00);
-	assert_test(idt_setup, "Set up Interrupt Descriptor Table");
+	assert_test(idt_setup, "Set up default Interrupt Descriptor Table");
 	idt_set_current(idt_get_default());
+	assert_test(idt_setup, "Delegated default IDT to CPU");
 	
-	printf("Size: %i\n", sizeof(idt));
+	interrupt_set_handler((addr)&kernel_interrupt);
+	assert_test(idt_setup, "Assigned Interrupt Service Routine");
 	
 	interrupt_set_enabled(true);
 	assert_test(true, "Enabled interrupts");
@@ -97,16 +93,20 @@ void kernel_run()
 	printf(version);
 	printf("\\CF\n");
 	
-	printf("%c Hello! I'm %d testing %s printf %x %X output %i .", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
+	//for (int i = 0; i < 256; i ++)
+		//idt_set_entry(idt_get_default(), i, (void*)&kernel_interrupt, 8, 0x8E00);
+	
+	printf("%c Hello! I'm %d testing %s printf %x %X output %i\n", '!', 1378, "the", 0xDEAD, 0xBEEF, -13);
 	
 	// Avoid halting
 	while (true) {}
 }
 
-void kernel_interrupt(int irq)
+void kernel_interrupt(uint8 irq)
 {
-	a ++;
-	printf("Interrupt! Type = %u, a = %u\n", irq, a);
-	interrupt_handle();
-	asm volatile ("iretq");
+	//while (inb(0x64) & 2);
+	ulong key = inb(0x60);
+	outb(0x20, 0x20);
+	printf("Key = %u\n", key);
+	printf("Interrupt! Type = %u\n", irq);
 }

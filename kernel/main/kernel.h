@@ -33,6 +33,6 @@
 
 void kernel_init();
 void kernel_run();
-void kernel_interrupt();
+void kernel_interrupt(uint8 irq);
 
 #endif

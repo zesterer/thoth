@@ -32,6 +32,7 @@
 // GCC standard headers
 #include "stddef.h"
 #include "stdint.h"
+#include "stdbool.h"
 
 // System types
 typedef uint8_t  byte;

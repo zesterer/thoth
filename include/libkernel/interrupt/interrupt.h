@@ -29,15 +29,20 @@
 #ifndef LIBKERNEL_INTERRUPT_INTERRUPT_H
 #define LIBKERNEL_INTERRUPT_INTERRUPT_H
 
-typedef void (*interrupt_handler)(int vec);
+// Libthoth
+#include "libthoth/type.h"
+
+typedef void (*interrupt_handler)(int irq);
 
 void interrupt_set_enabled(bool enabled);
 bool interrupt_get_enabled();
 
-static inline void interrupt_handle()
+/*static inline void interrupt_handle()
 {
 	asm volatile("mov $20, %al\n"
 	"out %al, $20");
-}
+}*/
+
+void interrupt_set_handler(void* handler);
 
 #endif

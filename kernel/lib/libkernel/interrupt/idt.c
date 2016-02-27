@@ -31,7 +31,10 @@
 
 // libc
 #include "libc/stdlib.h"
+#include "libc/stdio.h"
 #include "libc/string.h"
+
+extern void* isr_handler;
 
 // The default IDT
 idt* idt_default = NULL;
@@ -44,13 +47,16 @@ idt* idt_setup_default()
 	for (sysint i = 0; i < sizeof(idt); i ++)
 		((byte*)idt_get_default())[i] = 0;
 	
+	for (int i = 0; i < 256; i ++)
+		idt_set_entry(idt_get_default(), i, &isr_handler, 8, 0x8E00);
+	
 	return idt_default;
 }
 
 void idt_set_current(idt* table)
 {
 	struct idtr { uint16 size; addr base; } __attribute__((packed));
-	idtr current_idtr = {sizeof(idt), (void*)table};
+	idtr current_idtr = {sizeof(idt), (addr)table};
 	asm ("lidt %0" : : "m"(current_idtr));
 }
 
@@ -59,7 +65,7 @@ idt* idt_get_default()
 	return idt_default;
 }
 
-void idt_set_entry(idt* table, uint8 irq, interrupt_handler handler, uint16 selector, uint16 type_attributes)
+void idt_set_entry(idt* table, uint8 irq, addr handler, uint16 selector, uint16 type_attributes)
 {
 	table->entries[irq].offset_low =  ((uint64)handler & 0x000000000000FFFF) >> 0;
 	table->entries[irq].selector = selector;

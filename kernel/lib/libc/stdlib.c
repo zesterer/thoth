@@ -89,6 +89,12 @@ char* itoa(int value, char* str, int base)
 		v /= base;
 	}
 	
+	if (value == 0)
+	{
+		str[i] = '0';
+		i ++;
+	}
+	
 	str[i] = '\0';
 	return str;
 }

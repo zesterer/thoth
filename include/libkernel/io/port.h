@@ -52,4 +52,31 @@ static inline void outq(uint16 port, uint64 value)
 	asm volatile ("outq %0, %1" : : "a"(value), "Nd"(port));
 }
 
+static inline uint8 inb(uint16 port)
+{
+	uint8 value;
+	asm volatile ("inb %[port], %[ret]"
+	              : [ret] "=a"(value)
+	              : [port] "Nd"(port));
+	return value;
+}
+
+static inline uint16 inw(uint16 port)
+{
+	uint16 value;
+	asm volatile ("inw %[port], %[ret]"
+	              : [ret] "=a"(value)
+	              : [port] "Nd"(port));
+	return value;
+}
+
+static inline uint32 inl(uint16 port)
+{
+	uint32 value;
+	asm volatile ("inl %[port], %[ret]"
+	              : [ret] "=a"(value)
+	              : [port] "Nd"(port));
+	return value;
+}
+
 #endif
