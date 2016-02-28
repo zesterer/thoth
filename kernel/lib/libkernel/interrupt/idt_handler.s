@@ -49,7 +49,7 @@ isr_handler:
 	mov (interrupt_handler_address), %rdx	// Select the interrupt service routine
 	call *%rdx		// Actually call the interrupt service routine
 	restore_regs	// Pop general-purpose registers onto the stack
-	jmp _kernel_panic
+	//jmp _kernel_panic
 	iretq			// Return from the interrupt
 
 .section .data

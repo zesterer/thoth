@@ -49,6 +49,7 @@ kernel_objects += Glob("lib/libcpp/*.o")
 kernel_objects += Glob("lib/libkernel/*.o")
 kernel_objects += Glob("lib/libkernel/vga/*.o")
 kernel_objects += Glob("lib/libkernel/interrupt/*.o")
+kernel_objects += Glob("lib/libkernel/io/*.o")
 
 kernel_objects += Glob("lib/libthoth/*.o")
 kernel_objects += Glob("lib/libthoth/core/*.o")

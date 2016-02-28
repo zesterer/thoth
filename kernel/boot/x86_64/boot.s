@@ -150,7 +150,31 @@ _start64:
 // A kernel panic code
 .global _kernel_panic
 _kernel_panic:
-	mov $(0xB8000 + 0x00), %eax
+	
+	mov $0xB8000, %eax
+	mov $(80 * 25), %ecx
+_kernel_panic_clear_screen:
+	movb $0, (%eax)
+	add $1, %eax
+	movb $(4 << 4), (%eax)
+	add $1, %eax
+	sub $1, %ecx
+	jnz _kernel_panic_clear_screen
+	
+	mov $0xB8000, %eax
+	mov $(_kernel_panic_error_string), %ebx
+	mov $41, %ecx
+_kernel_panic_write_error:
+	mov (%ebx), %dx
+	mov %dx, (%eax)
+	add $1, %eax
+	movb $((4 << 4) | (15 << 0)), (%eax)
+	add $1, %eax
+	add $1, %ebx
+	sub $1, %ecx
+	jnz _kernel_panic_write_error
+	
+	/*mov $(0xB8000 + 0x00), %eax
 	movw $('K' | (4 << 12) | (15 << 8)), (%eax)
 	mov $(0xB8000 + 0x02), %eax
 	movw $('e' | (4 << 12) | (15 << 8)), (%eax)
@@ -175,9 +199,14 @@ _kernel_panic:
 	mov $(0xB8000 + 0x16), %eax
 	movw $('c' | (4 << 12) | (15 << 8)), (%eax)
 	mov $(0xB8000 + 0x18), %eax
-	movw $('!' | (4 << 12) | (15 << 8)), (%eax)
+	movw $('!' | (4 << 12) | (15 << 8)), (%eax)*/
 	
+	cli
 	jmp _hang_cpu
+
+.section .data
+	.align 4
+	_kernel_panic_error_string: .ascii "    Kernel panic! Critical error occured."
 
 .section .end_of_kernel
 .global _end_of_kernel

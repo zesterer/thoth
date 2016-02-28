@@ -19,41 +19,21 @@
 */
 
 /*
-* Name:         interrupt.c
+* Name:         pic.h
 * 
-* Description:  Interrupt functions
+* Description:  Functions to manage the PIC (Programmable Interrupt Controller)
 * 
 * Notes:        NONE
 */
 
-// Local
-#include "libkernel/io/port.h"
-#include "libkernel/interrupt/idt.h"
+#ifndef LIBKERNEL_IO_PIC_H
+#define LIBKERNEL_IO_PIC_H
 
-extern uint64 interrupt_handler_address;
+#include "libthoth/type.h"
 
-void interrupt_set_enabled(bool enabled)
-{
-	if (enabled)
-	{
-		//outb(0x21,0xFD);
-		//outb(0xA1,0xFF);
-		asm volatile ("sti");
-	}
-	else
-		asm volatile ("cli");
-}
+void pic_init(byte offset0, byte offset1);
+void pic_end_interrupt(byte irq);
+void pic_set_mask(byte line);
+void pic_clear_mask(byte line);
 
-bool interrupt_get_enabled()
-{
-	unsigned long flags;
-	asm volatile ( "pushf\n\t"
-	               "pop %0"
-	             : "=g"(flags) );
-	return flags & (1 << 9);
-}
-
-void interrupt_set_handler(void* handler)
-{
-	interrupt_handler_address = (uint64)handler;
-}
+#endif

@@ -9,6 +9,7 @@ source_files += Glob("*.c")
 source_files += Glob("vga/*.c")
 source_files += Glob("interrupt/*.c")
 source_files += Glob("interrupt/*.s")
+source_files += Glob("io/*.c")
 
 # Compile the source files
 

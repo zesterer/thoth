@@ -39,6 +39,7 @@
 #include "libkernel/interrupt/idt.h"
 #include "libkernel/interrupt/interrupt.h"
 #include "libkernel/io/port.h"
+#include "libkernel/io/pic.h"
 
 // libc
 #include "libc/stdlib.h"
@@ -62,6 +63,9 @@ void kernel_init()
 	assert_test(true, "Init stable environment");
 	assert_test(true, "Jump to kernel entry location");
 	assert_test(true, "Init text-mode VGA buffer");
+	
+	pic_init(0x20, 0x28);
+	assert_test(true, "Initialized PIC");
 	
 	bool enabled_dmm = dmm_set(&_end_of_kernel, 0x4000000) == 0;
 	assert_test(enabled_dmm, "Set up kernel-space DMM");
@@ -106,7 +110,9 @@ void kernel_interrupt(uint8 irq)
 {
 	//while (inb(0x64) & 2);
 	ulong key = inb(0x60);
-	outb(0x20, 0x20);
-	printf("Key = %u\n", key);
-	printf("Interrupt! Type = %u\n", irq);
+	outb(0x64, 0xF3);
+	outb(0x60, 0x1F);
+	//asm volatile("jmp _kernel_panic");
+	printf("Keyboard interrupt! Key = %u, IRQ = %u\n", key, irq);
+	pic_end_interrupt(irq);
 }
